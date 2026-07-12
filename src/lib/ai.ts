@@ -154,23 +154,44 @@ export async function analyzeWithAI(
 
   try {
     const client = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+    const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
 
-    const response = await client.models.generateContent({
-      model,
-      contents: buildUserPrompt(kind, text, signalHint),
-      config: {
-        systemInstruction: buildSystemPrompt(language),
-        responseMimeType: "application/json",
-        maxOutputTokens: 900,
-      },
-    });
+    // ponytail: one retry on 429 (rate limit) with a short delay — the free
+    // tier has tight per-minute limits but resets quickly.
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const response = await client.models.generateContent({
+          model,
+          contents: buildUserPrompt(kind, text, signalHint),
+          config: {
+            systemInstruction: buildSystemPrompt(language),
+            maxOutputTokens: 8192,
+          },
+        });
 
-    const raw = response.text;
-    const parsed = raw ? parseJson(raw) : null;
-    if (!parsed) return fallback;
+        // Extract text from all parts of the first candidate's content
+        const parts = response.candidates?.[0]?.content?.parts ?? [];
+        const raw = parts
+          .filter((p: Record<string, unknown>) => typeof p.text === "string" && !p.thought)
+          .map((p: Record<string, unknown>) => p.text as string)
+          .join("");
+        
+        const parsed = raw.length > 20 ? parseJson(raw) : null;
+        if (!parsed) return fallback;
 
-    return toAnalysisResult(parsed, fallback, "gemini");
+        return toAnalysisResult(parsed, fallback, "gemini");
+      } catch (e: unknown) {
+        lastErr = e;
+        const status = (e as { status?: number }).status;
+        if (status === 429 && attempt === 0) {
+          await new Promise((r) => setTimeout(r, 3000)); // wait 3s, retry once
+          continue;
+        }
+        throw e;
+      }
+    }
+    throw lastErr;
   } catch (err) {
     console.error("[RakshakAI] Gemini analysis failed, using fallback:", err);
     return fallback;
