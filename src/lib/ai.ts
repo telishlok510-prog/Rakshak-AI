@@ -173,8 +173,8 @@ export async function analyzeWithAI(
         // Extract text from all parts of the first candidate's content
         const parts = response.candidates?.[0]?.content?.parts ?? [];
         const raw = parts
-          .filter((p: Record<string, unknown>) => typeof p.text === "string" && !p.thought)
-          .map((p: Record<string, unknown>) => p.text as string)
+          .filter((p) => "text" in p && typeof p.text === "string" && !("thought" in p && p.thought))
+          .map((p) => (p as { text: string }).text)
           .join("");
         
         const parsed = raw.length > 20 ? parseJson(raw) : null;
