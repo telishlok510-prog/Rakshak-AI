@@ -170,11 +170,12 @@ export async function analyzeWithAI(
           },
         });
 
-        // Extract text from all parts of the first candidate's content
+        // Extract full text from response candidates (typed for @google/genai Part)
         const parts = response.candidates?.[0]?.content?.parts ?? [];
-        const raw = parts
-          .filter((p) => "text" in p && typeof p.text === "string" && !("thought" in p && p.thought))
-          .map((p) => (p as { text: string }).text)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const raw = (parts as any[])
+          .filter((p) => typeof p.text === "string" && !p.thought)
+          .map((p) => p.text as string)
           .join("");
         
         const parsed = raw.length > 20 ? parseJson(raw) : null;
