@@ -1,0 +1,30 @@
+{
+  "name": "rakshak-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Powered Scam Detection & Financial Literacy Platform for Rural India",
+  "scripts": {
+    "dev": "next dev",
+    "dev:mobile": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@google/genai": "^2.11.0",
+    "jsqr": "^1.4.0",
+    "next": "^14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.5.3"
+  }
+}

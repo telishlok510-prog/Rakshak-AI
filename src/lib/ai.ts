@@ -47,7 +47,7 @@ const KIND_LABEL: Record<CheckKind, string> = {
  *   2) GEMINI_API_KEYS="key1,key2,key3" (comma-separated, single var)
  * Falls back to the original single GEMINI_API_KEY for backward compatibility.
  */
-function getApiKeys(): string[] {
+export function getApiKeys(): string[] {
   const keys: string[] = [];
 
   // Style 1: numbered vars GEMINI_API_KEY_1..GEMINI_API_KEY_10
@@ -78,7 +78,7 @@ function getApiKeys(): string[] {
 let rotationIndex = 0;
 
 /** Returns keys starting at the current rotation pointer, wrapping around. */
-function getRotatedKeys(): string[] {
+export function getRotatedKeys(): string[] {
   const keys = getApiKeys();
   if (keys.length === 0) return [];
   const start = rotationIndex % keys.length;
@@ -239,6 +239,11 @@ export async function analyzeWithAI(
 ): Promise<AnalysisResult> {
   const keys = getRotatedKeys();
 
+  // TEMPORARY DEBUG LOG — remove once the issue is fixed.
+  // This prints to Vercel's Runtime Logs so we can see exactly how many
+  // keys were found at runtime, without ever printing the key values.
+  console.log(`[RakshakAI][DEBUG] Found ${keys.length} Gemini key(s) at runtime.`);
+
   // No key configured -> offline demo mode.
   if (keys.length === 0) return heuristicAnalyze(kind, text, language);
 
@@ -257,13 +262,23 @@ export async function analyzeWithAI(
   // error, stop and fall back to heuristics right away.
   for (let i = 0; i < keys.length; i++) {
     const apiKey = keys[i];
+    // TEMPORARY DEBUG LOG — shows which key SLOT is being tried (never the
+    // key value itself) so we can see exactly how far the loop gets.
+    console.log(`[RakshakAI][DEBUG] Trying key #${i + 1} of ${keys.length}...`);
     try {
       const parsed = await callGeminiOnce(apiKey, model, kind, text, language, signalHint);
+      console.log(`[RakshakAI][DEBUG] Key #${i + 1} succeeded.`);
       if (!parsed) return fallback; // model responded but gave unusable output
       return toAnalysisResult(parsed, fallback, "gemini");
     } catch (e: unknown) {
       lastErr = e;
       const status = (e as { status?: number }).status;
+      const message = e instanceof Error ? e.message : String(e);
+
+      // TEMPORARY DEBUG LOG — full error detail for this specific key.
+      console.error(
+        `[RakshakAI][DEBUG] Key #${i + 1} FAILED. status=${status} message=${message}`
+      );
 
       if (status === 429) {
         console.warn(
