@@ -1,0 +1,14 @@
+{
+  "components\\checkers\\QrScanner.tsx -> jsqr": {
+    "id": "components\\checkers\\QrScanner.tsx -> jsqr",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_jsqr_dist_jsQR_js.js"
+    ]
+  },
+  "components\\checkers\\ScreenshotChecker.tsx -> tesseract.js": {
+    "id": "components\\checkers\\ScreenshotChecker.tsx -> tesseract.js",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_tesseract_js_src_index_js.js"
+    ]
+  }
+}

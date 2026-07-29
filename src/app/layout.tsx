@@ -4,18 +4,13 @@ import { I18nProvider } from "@/lib/i18n";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatAssistant from "@/components/ChatAssistant";
-import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 
 export const metadata: Metadata = {
   title: "Rakshak AI — Financial Safety for Rural India",
   description:
     "Free, AI-powered scam detection and financial-literacy platform. Check suspicious SMS, UPI requests, links and calls in your own language.",
   manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Rakshak AI",
-  },
 };
 
 export const viewport: Viewport = {
@@ -34,7 +29,7 @@ export default function RootLayout({
     // client-side once the saved language preference loads (see lib/i18n.tsx).
     <html lang="en">
       <body className="min-h-screen bg-canvas antialiased">
-        <ServiceWorkerRegister />
+        <RegisterServiceWorker />
         <I18nProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
