@@ -5,6 +5,7 @@ import type {
   DetectedIndicator,
   LanguageCode,
   RiskLevel,
+  ScamCategory,
 } from "./types";
 import { collectSignals, heuristicAnalyze } from "./detection";
 
@@ -504,7 +505,7 @@ export async function analyzeReportForAlert(
   reportText: string,
   language: LanguageCode
 ): Promise<{
-  category: string;
+  category: ScamCategory;
   summary: string;
   preventionTip: string;
 }> {
@@ -552,7 +553,7 @@ export async function analyzeReportForAlert(
       const parsed = parseJson(raw);
       if (parsed && isValidReportAnalysis(parsed)) {
         return {
-          category: String(parsed.category),
+          category: parsed.category as ScamCategory,
           summary: String(parsed.summary),
           preventionTip: String(parsed.preventionTip),
         };
@@ -656,7 +657,7 @@ function createFallbackReportAnalysis(
   reportText: string,
   language: LanguageCode
 ): {
-  category: string;
+  category: ScamCategory;
   summary: string;
   preventionTip: string;
 } {
@@ -669,7 +670,7 @@ function createFallbackReportAnalysis(
     : "Never share OTP, PIN, or card details with anyone. Call 1930 if suspicious.";
   
   return {
-    category: "Other",
+    category: "Other" as ScamCategory,
     summary,
     preventionTip,
   };

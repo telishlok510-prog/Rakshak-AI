@@ -139,9 +139,9 @@ async function sendNotificationsToDistrict(
   // Send to all subscriptions, track failures
   const results = await Promise.allSettled(
     subscriptions.map((sub) =>
-      webpush.sendNotification(sub, payload).catch((e) => {
+      webpush.sendNotification(sub as any, payload).catch((e) => {
         // Rethrow with subscription endpoint for cleanup
-        const error = new Error(`Failed to send to ${sub.endpoint}`);
+        const error = new Error(`Failed to send to ${sub.endpoint || 'unknown'}`);
         (error as any).status = (e as any).statusCode || (e as any).status;
         (error as any).endpoint = sub.endpoint;
         throw error;
@@ -155,7 +155,7 @@ async function sendNotificationsToDistrict(
     if (result.status === "rejected") {
       const error = result.reason as any;
       const status = error?.status;
-      const endpoint = error?.endpoint || subscriptions[index].endpoint;
+      const endpoint = error?.endpoint || subscriptions[index].endpoint || '';
       
       console.warn(`[Report] Notification failed for ${endpoint}: ${error?.message}`);
       
@@ -167,7 +167,7 @@ async function sendNotificationsToDistrict(
 
   // Remove dead subscriptions from KV
   if (deadEndpoints.length > 0) {
-    const filtered = subscriptions.filter((sub) => !deadEndpoints.includes(sub.endpoint));
+    const filtered = subscriptions.filter((sub) => !deadEndpoints.includes(sub.endpoint || ''));
     
     if (filtered.length > 0) {
       await kv.set(subsKey, filtered, { ex: 90 * 24 * 60 * 60 });
