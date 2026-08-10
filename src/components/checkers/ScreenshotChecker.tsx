@@ -35,7 +35,10 @@ export default function ScreenshotChecker({
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [useAI, setUseAI] = useState(false);
+  // Default to Advanced AI mode when a photo was shared in from Gallery
+  // (initialFile set) — catches fake logos/UI that basic OCR would miss.
+  // Otherwise starts in Basic OCR mode as before.
+  const [useAI, setUseAI] = useState(!!initialFile);
 
   const reset = () => {
     setImageUrl(null);
