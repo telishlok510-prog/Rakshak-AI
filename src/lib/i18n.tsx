@@ -13,7 +13,7 @@ export const LANGUAGES: { code: LanguageCode; label: string; native: string }[] 
   { code: "en", label: "English", native: "English" },
   { code: "gu", label: "Gujarati", native: "ગુજરાતી" },
 ];
-ī
+
 type Dict = Record<string, string>;
 
 const STRINGS: Record<LanguageCode, Dict> = {
