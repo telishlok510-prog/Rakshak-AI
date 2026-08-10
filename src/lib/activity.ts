@@ -3,17 +3,10 @@ import type { RiskLevel } from "./types";
 /**
  * On-device activity tracker for the Safety Score Dashboard.
  *
- * ponytail: deliberately no backend/auth/database. Everything the dashboard
- * shows is derived from real interactions on THIS device, kept in
- * localStorage. This matches the product's existing "no login, no data
- * collection" promise (see About page / disclaimer) and sidesteps an entire
- * class of security/privacy risk a backend would introduce. Ceiling: stats
- * don't sync across devices — acceptable for a single-user safety companion,
- * and the natural upgrade path (if ever needed) is an opt-in account synced
- * via the existing /api routes.
+ * Everything stays in localStorage — no backend, no login, no data collection.
  */
 
-const KEY = "srp-activity-v1";
+const KEY = "srp-activity-v2"; // Bumped version for new practice schema
 
 export interface CheckLogEntry {
   kind: string;
@@ -27,27 +20,58 @@ export interface SimLogEntry {
   at: number;
 }
 
+/** NEW: Tracks completion of Practice modules (scam call, ATM, UPI, netbanking, quiz) */
+export interface PracticeLogEntry {
+  moduleType: "scam-call" | "atm" | "upi" | "netbanking" | "quiz";
+  score: number; // correct answers / safe choices made
+  total: number; // total questions or decision points
+  at: number;
+}
+
 interface ActivityState {
   checks: CheckLogEntry[];
-  simAnswers: Record<string, SimLogEntry>; // keyed by scenarioId, latest wins
-  lessonsRead: string[]; // lesson ids
+  simAnswers: Record<string, SimLogEntry>;
+  lessonsRead: string[];
+  practiceCompletions: PracticeLogEntry[]; // NEW
   firstSeenAt: number;
 }
 
 function emptyState(): ActivityState {
-  return { checks: [], simAnswers: {}, lessonsRead: [], firstSeenAt: Date.now() };
+  return {
+    checks: [],
+    simAnswers: {},
+    lessonsRead: [],
+    practiceCompletions: [],
+    firstSeenAt: Date.now(),
+  };
 }
 
 function load(): ActivityState {
   if (typeof window === "undefined") return emptyState();
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (!raw) return emptyState();
+    if (!raw) {
+      // Try migrating from v1
+      const oldRaw = window.localStorage.getItem("srp-activity-v1");
+      if (oldRaw) {
+        const old = JSON.parse(oldRaw) as Partial<ActivityState>;
+        const migrated: ActivityState = {
+          checks: old.checks ?? [],
+          simAnswers: old.simAnswers ?? {},
+          lessonsRead: old.lessonsRead ?? [],
+          practiceCompletions: [],
+          firstSeenAt: old.firstSeenAt ?? Date.now(),
+        };
+        return migrated;
+      }
+      return emptyState();
+    }
     const parsed = JSON.parse(raw) as Partial<ActivityState>;
     return {
       checks: parsed.checks ?? [],
       simAnswers: parsed.simAnswers ?? {},
       lessonsRead: parsed.lessonsRead ?? [],
+      practiceCompletions: parsed.practiceCompletions ?? [],
       firstSeenAt: parsed.firstSeenAt ?? Date.now(),
     };
   } catch {
@@ -60,15 +84,13 @@ function save(state: ActivityState) {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
-    // ponytail: storage full or blocked (private browsing) — fail silently,
-    // the dashboard is a nice-to-have, never a blocker for the core checker.
+    // Fail silently if storage is full or blocked
   }
 }
 
 export function logCheck(kind: string, risk: RiskLevel) {
   const s = load();
   s.checks.push({ kind, risk, at: Date.now() });
-  // Cap history so localStorage never grows unbounded.
   if (s.checks.length > 500) s.checks = s.checks.slice(-500);
   save(s);
 }
@@ -85,19 +107,41 @@ export function logLessonRead(lessonId: string) {
   save(s);
 }
 
+/** NEW: Log when a user completes any Practice module */
+export function logPracticeComplete(
+  moduleType: PracticeLogEntry["moduleType"],
+  score: number,
+  total: number
+) {
+  const s = load();
+  s.practiceCompletions.push({ moduleType, score, total, at: Date.now() });
+  // Cap practice history
+  if (s.practiceCompletions.length > 200) {
+    s.practiceCompletions = s.practiceCompletions.slice(-200);
+  }
+  save(s);
+}
+
 export interface ActivitySummary {
   totalChecks: number;
-  scamsCaught: number; // checks that came back risk = "scam"
+  scamsCaught: number;
   simCorrect: number;
   simAnswered: number;
   lessonsRead: number;
   daysSinceStart: number;
   recentChecks: CheckLogEntry[];
+  // NEW practice stats
+  practiceCompletions: number;
+  practiceScore: number; // total correct across all practice modules
+  practiceTotal: number; // total questions across all practice modules
+  practiceAccuracy: number; // 0-1
 }
 
 export function getSummary(): ActivitySummary {
   const s = load();
   const simEntries = Object.values(s.simAnswers);
+  const practiceScore = s.practiceCompletions.reduce((sum, p) => sum + p.score, 0);
+  const practiceTotal = s.practiceCompletions.reduce((sum, p) => sum + p.total, 0);
   return {
     totalChecks: s.checks.length,
     scamsCaught: s.checks.filter((c) => c.risk === "scam").length,
@@ -109,22 +153,34 @@ export function getSummary(): ActivitySummary {
       Math.ceil((Date.now() - s.firstSeenAt) / 86_400_000)
     ),
     recentChecks: s.checks.slice(-5).reverse(),
+    practiceCompletions: s.practiceCompletions.length,
+    practiceScore,
+    practiceTotal,
+    practiceAccuracy: practiceTotal > 0 ? practiceScore / practiceTotal : 0,
   };
 }
 
 /**
- * Financial Safety Score (0-100): a single, explainable number combining
- * real detection usage, simulator accuracy, and literacy engagement. Judges
- * and low-literacy users alike can grasp "bigger number = safer habits"
- * without needing to understand the underlying weights.
+ * Financial Safety Score (0-100)
+ * - Usage: up to 30 pts (actually using the checker)
+ * - Simulator accuracy: up to 25 pts (scam simulator)
+ * - Practice modules: up to 25 pts (new: scam call, ATM, UPI, netbanking, quiz)
+ * - Literacy: up to 20 pts (lessons read)
  */
-export function computeSafetyScore(summary: ActivitySummary, lessonTotal: number, simTotal: number): number {
-  const usageScore = Math.min(40, summary.totalChecks * 4); // up to 40 pts for actually using the checker
+export function computeSafetyScore(
+  summary: ActivitySummary,
+  lessonTotal: number,
+  simTotal: number
+): number {
+  const usageScore = Math.min(30, summary.totalChecks * 3);
   const simAccuracy = summary.simAnswered > 0 ? summary.simCorrect / summary.simAnswered : 0;
-  const simScore = Math.round(simAccuracy * 35); // up to 35 pts for spotting scams correctly
-  const literacyScore = Math.round((summary.lessonsRead / Math.max(1, lessonTotal)) * 25); // up to 25 pts
-  void simTotal; // reserved for future weighting by scenario coverage
-  return Math.min(100, usageScore + simScore + literacyScore);
+  const simScore = Math.round(simAccuracy * 25);
+  const practiceScore = Math.round(summary.practiceAccuracy * 25);
+  const literacyScore = Math.round(
+    (summary.lessonsRead / Math.max(1, lessonTotal)) * 20
+  );
+  void simTotal; // reserved
+  return Math.min(100, usageScore + simScore + practiceScore + literacyScore);
 }
 
 export interface Badge {
@@ -135,11 +191,23 @@ export interface Badge {
 }
 
 export function getBadges(summary: ActivitySummary): Badge[] {
+  const practiceTypes = new Set(
+    summary.practiceCompletions > 0
+      ? load().practiceCompletions.map((p) => p.moduleType)
+      : []
+  );
+
   return [
     { id: "first-check", icon: "🔍", title: "First Check", earned: summary.totalChecks >= 1 },
     { id: "scam-spotter", icon: "🕵️", title: "Scam Spotter", earned: summary.scamsCaught >= 1 },
     { id: "vigilant", icon: "🛡️", title: "Vigilant (10 checks)", earned: summary.totalChecks >= 10 },
     { id: "quiz-master", icon: "🧠", title: "Quiz Master", earned: summary.simAnswered >= 5 && summary.simCorrect === summary.simAnswered },
     { id: "lifelong-learner", icon: "📚", title: "Lifelong Learner", earned: summary.lessonsRead >= 3 },
+    // NEW practice badges
+    { id: "call-detective", icon: "📞", title: "Call Detective", earned: practiceTypes.has("scam-call") },
+    { id: "atm-smart", icon: "🏧", title: "ATM Smart", earned: practiceTypes.has("atm") },
+    { id: "upi-pro", icon: "📱", title: "UPI Pro", earned: practiceTypes.has("upi") },
+    { id: "net-safe", icon: "💻", title: "Net Safe", earned: practiceTypes.has("netbanking") },
+    { id: "practice-champion", icon: "🏆", title: "Practice Champion", earned: practiceTypes.size >= 3 },
   ];
 }

@@ -7,10 +7,10 @@ import { useI18n } from "@/lib/i18n";
 import LanguageSelector from "./LanguageSelector";
 
 const NAV = [
-  { href: "/", key: "nav.home" },
-  { href: "/check", key: "nav.check" },
-  { href: "/dashboard", key: "nav.dashboard" },
+  { href: "/check", key: "nav.protect" },
   { href: "/learn", key: "nav.learn" },
+  { href: "/practice", key: "nav.practice" },
+  { href: "/dashboard", key: "nav.dashboard" },
   { href: "/report", key: "nav.report" },
   { href: "/about", key: "nav.about" },
 ];

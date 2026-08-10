@@ -70,7 +70,6 @@ export default function DashboardPage() {
   const [badges, setBadges] = useState<Badge[]>([]);
   const [score, setScore] = useState(0);
 
-  // Reads from localStorage only on the client, after hydration.
   useEffect(() => {
     const s = getSummary();
     setSummary(s);
@@ -82,7 +81,15 @@ export default function DashboardPage() {
 
   const quizAccuracy =
     summary.simAnswered > 0 ? Math.round((summary.simCorrect / summary.simAnswered) * 100) : 0;
-  const hasActivity = summary.totalChecks > 0 || summary.simAnswered > 0 || summary.lessonsRead > 0;
+  const practiceAccuracy =
+    summary.practiceTotal > 0
+      ? Math.round(summary.practiceAccuracy * 100)
+      : 0;
+  const hasActivity =
+    summary.totalChecks > 0 ||
+    summary.simAnswered > 0 ||
+    summary.lessonsRead > 0 ||
+    summary.practiceCompletions > 0;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -110,11 +117,13 @@ export default function DashboardPage() {
               <ScoreRing score={score} />
               <p className="font-bold text-primary">{t("dash.score")}</p>
             </div>
-            <div className="grid w-full grid-cols-2 gap-3 sm:w-auto sm:grid-cols-2">
+            <div className="grid w-full grid-cols-2 gap-3 sm:w-auto sm:grid-cols-3">
               <StatCard icon="🔍" label={t("dash.checks")} value={summary.totalChecks} />
               <StatCard icon="🚫" label={t("dash.caught")} value={summary.scamsCaught} />
               <StatCard icon="🧠" label={t("dash.quizAcc")} value={`${quizAccuracy}%`} />
               <StatCard icon="📚" label={t("dash.lessons")} value={summary.lessonsRead} />
+              <StatCard icon="🏋️" label={t("dash.practiceDone") || "Practice Done"} value={summary.practiceCompletions} />
+              <StatCard icon="🎯" label={t("dash.practiceAcc") || "Practice Acc"} value={`${practiceAccuracy}%`} />
             </div>
           </div>
 
@@ -154,6 +163,24 @@ export default function DashboardPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Practice Activity */}
+          {summary.practiceCompletions > 0 && (
+            <div className="card mt-6">
+              <h2 className="mb-4 text-lg font-bold text-primary">
+                🏋️ {t("dash.practiceActivity") || "Practice Activity"}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {t("dash.practiceDesc") ||
+                  `You have completed ${summary.practiceCompletions} practice simulations with ${practiceAccuracy}% accuracy. Keep practicing to improve your safety skills!`}
+              </p>
+              <div className="mt-4">
+                <Link href="/practice" className="btn-primary inline-block">
+                  {t("dash.cta.practice") || "Go to Practice →"}
+                </Link>
+              </div>
             </div>
           )}
         </>

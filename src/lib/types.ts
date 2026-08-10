@@ -4,6 +4,18 @@ export type CheckKind = "sms" | "upi" | "url" | "call" | "screenshot";
 
 export type LanguageCode = "en" | "gu";
 
+/** Fixed scam categories for alert system notifications */
+export type ScamCategory =
+  | "UPI Collect Request Scam"
+  | "Digital Arrest / Fake Police Call"
+  | "KYC Phishing SMS"
+  | "Loan App Harassment"
+  | "Investment / Trading Scam"
+  | "Lottery / Prize Scam"
+  | "Job Scam"
+  | "OTP Sharing Scam"
+  | "Other";
+
 /** Stable codes for each detectable phishing / scam indicator. */
 export type IndicatorCode =
   | "URGENCY"

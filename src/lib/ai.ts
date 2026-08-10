@@ -491,3 +491,186 @@ export async function analyzeImageWithAI(
   );
   return fallback;
 }
+
+// ---------------------------------------------------------------------------
+// Report Analysis for Alert System
+// ---------------------------------------------------------------------------
+
+/**
+ * NEW: Analyze a scam report to generate category, summary, and prevention tip
+ * for the location-based alert system. Reuses multi-key rotation pattern.
+ */
+export async function analyzeReportForAlert(
+  reportText: string,
+  language: LanguageCode
+): Promise<{
+  category: string;
+  summary: string;
+  preventionTip: string;
+}> {
+  const keys = getRotatedKeys();
+
+  console.log(`[RakshakAI][DEBUG][Report] Found ${keys.length} Gemini key(s) for report analysis.`);
+
+  // No key configured -> generic fallback
+  if (keys.length === 0) {
+    return createFallbackReportAnalysis(reportText, language);
+  }
+
+  const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
+  const systemPrompt = buildReportAnalysisSystemPrompt(language);
+  const userPrompt = buildReportAnalysisUserPrompt(reportText, language);
+
+  let lastErr: unknown;
+
+  // Try each key with same multi-key rotation logic
+  for (let i = 0; i < keys.length; i++) {
+    const apiKey = keys[i];
+    console.log(`[RakshakAI][DEBUG][Report] Trying key #${i + 1} of ${keys.length}...`);
+    
+    try {
+      const client = new GoogleGenAI({ apiKey });
+      
+      const response = await client.models.generateContent({
+        model,
+        contents: userPrompt,
+        config: {
+          systemInstruction: systemPrompt,
+          maxOutputTokens: 1024,
+        },
+      });
+
+      const parts = response.candidates?.[0]?.content?.parts ?? [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const raw = (parts as any[])
+        .filter((p) => typeof p.text === "string" && !p.thought)
+        .map((p) => p.text as string)
+        .join("");
+
+      console.log(`[RakshakAI][DEBUG][Report] Key #${i + 1} succeeded, parsing response...`);
+      
+      const parsed = parseJson(raw);
+      if (parsed && isValidReportAnalysis(parsed)) {
+        return {
+          category: String(parsed.category),
+          summary: String(parsed.summary),
+          preventionTip: String(parsed.preventionTip),
+        };
+      }
+      
+      // Invalid response format, try next key
+      console.warn(`[RakshakAI][Report] Key #${i + 1} returned invalid format, trying next...`);
+      continue;
+      
+    } catch (e: unknown) {
+      lastErr = e;
+      const status = (e as { status?: number }).status;
+      const message = e instanceof Error ? e.message : String(e);
+
+      console.error(
+        `[RakshakAI][DEBUG][Report] Key #${i + 1} FAILED. status=${status} message=${message}`
+      );
+
+      if (status === 429) {
+        console.warn(`[RakshakAI][Report] Key #${i + 1} rate-limited (429), trying next key...`);
+        continue;
+      }
+      
+      // Non-rate-limit error, stop trying
+      break;
+    }
+  }
+
+  console.error("[RakshakAI][Report] All Gemini keys failed, using fallback:", lastErr);
+  return createFallbackReportAnalysis(reportText, language);
+}
+
+function buildReportAnalysisSystemPrompt(language: LanguageCode): string {
+  const langName = language === "en" ? "English" : "Gujarati";
+  
+  return [
+    "You are analyzing scam reports for Rakshak AI's alert system.",
+    "Your task: categorize the report, write a one-line summary, and provide",
+    "a short prevention tip.",
+    "",
+    "Category options (choose ONE, exactly as written):",
+    "- UPI Collect Request Scam",
+    "- Digital Arrest / Fake Police Call",
+    "- KYC Phishing SMS",
+    "- Loan App Harassment",
+    "- Investment / Trading Scam",
+    "- Lottery / Prize Scam",
+    "- Job Scam",
+    "- OTP Sharing Scam",
+    "- Other",
+    "",
+    "Rules:",
+    `- Summary must be one line, maximum 100 characters, in ${langName}`,
+    `- Prevention tip must be short (1-2 sentences), actionable, in ${langName}`,
+    "- Category MUST be one of the exact strings above (in English)",
+    "",
+    "Respond with ONLY a JSON object (no markdown, no code fences):",
+    "{",
+    '  "category": "<one of the categories above>",',
+    `  "summary": "<one line in ${langName}>",`,
+    `  "preventionTip": "<short tip in ${langName}>"`,
+    "}",
+  ].join("\n");
+}
+
+function buildReportAnalysisUserPrompt(reportText: string, language: LanguageCode): string {
+  return [
+    "Please analyze this scam report and categorize it:",
+    "",
+    '"""',
+    reportText.slice(0, 2000), // Cap at 2000 chars for efficiency
+    '"""',
+  ].join("\n");
+}
+
+function isValidReportAnalysis(parsed: Record<string, unknown>): boolean {
+  const validCategories = [
+    "UPI Collect Request Scam",
+    "Digital Arrest / Fake Police Call",
+    "KYC Phishing SMS",
+    "Loan App Harassment",
+    "Investment / Trading Scam",
+    "Lottery / Prize Scam",
+    "Job Scam",
+    "OTP Sharing Scam",
+    "Other",
+  ];
+  
+  return (
+    typeof parsed.category === "string" &&
+    validCategories.includes(parsed.category) &&
+    typeof parsed.summary === "string" &&
+    parsed.summary.length > 0 &&
+    parsed.summary.length <= 200 &&
+    typeof parsed.preventionTip === "string" &&
+    parsed.preventionTip.length > 0
+  );
+}
+
+function createFallbackReportAnalysis(
+  reportText: string,
+  language: LanguageCode
+): {
+  category: string;
+  summary: string;
+  preventionTip: string;
+} {
+  // Extract first ~100 chars as summary
+  const summary = reportText.slice(0, 100).trim() + (reportText.length > 100 ? "..." : "");
+  
+  // Generic prevention tip
+  const preventionTip = language === "gu"
+    ? "કોઈને પણ OTP, PIN અથવા કાર્ડ વિગતો શેર કરશો નહીં. શંકા હોય તો 1930 પર કૉલ કરો."
+    : "Never share OTP, PIN, or card details with anyone. Call 1930 if suspicious.";
+  
+  return {
+    category: "Other",
+    summary,
+    preventionTip,
+  };
+}

@@ -10,11 +10,9 @@ interface Message {
   role: "user" | "assistant";
   text: string;
   time: string;
-  /** Present when this assistant message is a real scam-check result. */
   result?: AnalysisResult;
 }
 
-/** Chat can be waiting for the user to paste content to actually analyze. */
 type Mode = "idle" | "sms" | "url";
 
 const now = () =>
@@ -27,26 +25,27 @@ const RISK_COLOR: Record<RiskLevel, string> = {
 };
 
 /**
- * Floating AI Chat Assistant.
- *
- * "Analyze SMS" and "Check Website" are real actions: they switch the chat
- * into an input-collecting mode, then run the actual detection engine
- * (/api/analyze — heuristic + Gemini AI, the same one powering the Check page)
- * and render a structured, explainable result inline. Everything else is
- * answered from a small local safety knowledge base so it works instantly,
- * offline, and in Gujarati/English without needing an API key.
+ * Floating AI Chat Assistant — now with Banking Coach categories.
  */
 
-const QUICK_ACTIONS_EN: { label: string; mode?: "sms" | "url"; msg?: string }[] = [
+const QUICK_ACTIONS_EN: { label: string; mode?: "sms" | "url"; msg?: string; category?: string }[] = [
   { label: "📩 Analyze SMS", mode: "sms" },
   { label: "🔗 Check Website", mode: "url" },
+  { label: "🏦 Banking Questions", msg: "Tell me about banking basics" },
+  { label: "📱 UPI Questions", msg: "How does UPI work and how do I stay safe?" },
+  { label: "🏦 Loan Questions", msg: "How do I spot fake loan offers?" },
+  { label: "📈 Investment Questions", msg: "What are safe investment options for beginners?" },
   { label: "📚 Learn About Scams", msg: "Tell me about common scams in India" },
   { label: "🚨 Report a Scam", msg: "How do I report a scam?" },
 ];
 
-const QUICK_ACTIONS_GU: { label: string; mode?: "sms" | "url"; msg?: string }[] = [
+const QUICK_ACTIONS_GU: { label: string; mode?: "sms" | "url"; msg?: string; category?: string }[] = [
   { label: "📩 SMS તપાસો", mode: "sms" },
   { label: "🔗 વેબસાઇટ તપાસો", mode: "url" },
+  { label: "🏦 બેંકિંગ પ્રશ્નો", msg: "બેંકિંગના મૂળભૂત વિશે જણાવો" },
+  { label: "📱 UPI પ્રશ્નો", msg: "UPI કેવી રીતે કામ કરે અને સલામત કેવી રીતે રહેવું?" },
+  { label: "🏦 લોન પ્રશ્નો", msg: "નકલી લોન ઓફર કેવી રીતે ઓળખવી?" },
+  { label: "📈 રોકાણ પ્રશ્નો", msg: "શરૂઆત કરનારા માટે સલામત રોકાણ વિકલ્પો શું છે?" },
   { label: "📚 છેતરપિંડી વિશે જાણો", msg: "ભારતમાં સામાન્ય છેતરપિંડી વિશે જણાવો" },
   { label: "🚨 ફરિયાદ કરો", msg: "છેતરપિંડીની ફરિયાદ કેવી રીતે કરું?" },
 ];
@@ -66,6 +65,34 @@ const PROMPT_TEXT: Record<"sms" | "url", Record<string, string>> = {
 function getLocalResponse(msg: string, lang: string): string {
   const lower = msg.toLowerCase();
 
+  // ── Banking Basics ──
+  if (/\bbanking\b|bank account|jan dhan|pmjdy|બેંકિંગ|જન ધન|ખાતું/.test(lower)) {
+    return lang === "gu"
+      ? "🏦 બેંકિંગ મૂળભૂત:\n\n• Jan Dhan ખાતું શૂન્ય બેલેન્સે ખોલાય છે, મફત વીમો મળે\n• IFSC કોડ તમારી શાખા ઓળખે છે (ઓનલાઇન ટ્રાન્સફર માટે)\n• NEFT = કલાકોમાં ટ્રાન્સફર, IMPS = તરત ટ્રાન્સફર\n• CIBIL Score 700+ સારું, લોન સરળતાથી મળે\n• બેંક ક્યારેય ફોન પર OTP/PIN નથી માંગતી\n\nવધુ જાણવા 'Learn' પેજ જુઓ!"
+      : "🏦 Banking Basics:\n\n• Jan Dhan account opens with zero balance, includes free insurance\n• IFSC code identifies your branch (needed for online transfers)\n• NEFT = transfer in hours, IMPS = instant transfer\n• CIBIL Score 700+ is good, helps get loans easily\n• Banks never ask for OTP/PIN over the phone\n\nVisit the Learn page for more!";
+  }
+
+  // ── UPI Questions ──
+  if (/\bupi\b|\bcollect\b|કલેક્ટ|યુપીઆઈ|pin|qr/.test(lower)) {
+    return lang === "gu"
+      ? "📱 UPI સલામતી:\n\n• પૈસા મેળવવા ક્યારેય PIN દાખલ ન કરો\n• 'Collect request' મંજૂર = પૈસા જાય છે, નહીં કે મળે\n• QR સ્કેન + PIN = પૈસા મોકલો, મેળવો નહીં\n• ₹1-₹2 ની ટેસ્ટ વિનંતી = મોટી છેતરપિંડી પહેલાની તપાસ\n• અજાણ્યા UPI ID પર ક્યારેય પૈસા ન મોકલો\n\n'Practice' પેજ પર UPI Simulation રમો!"
+      : "📱 UPI Safety:\n\n• Never enter PIN to RECEIVE money\n• Approving a 'collect request' SENDS money out\n• QR scan + PIN = sending money, not receiving\n• ₹1-₹2 test requests are verification before a bigger scam\n• Never send money to unknown UPI IDs\n\nTry the UPI Simulation on the Practice page!";
+  }
+
+  // ── Loan Questions ──
+  if (/\bloan\b|lender|processing fee|ધિરાણ|લોન|ફી/.test(lower)) {
+    return lang === "gu"
+      ? "🏦 લોન સલામતી:\n\n• લોન આપતા પહેલા ફી માંગે = છેતરપિંડી\n• RBI સાથે નોંધાયેલ ધિરાણકર્તા જ પસંદ કરો\n• ગેરંટીડ મંજૂરી વગર દસ્તાવેજ તપાસ = નકલી\n• CIBIL Score 700+ લોન સરળ બનાવે\n• WhatsApp/SMS થી લોન ઓફર = શંકાસ્પદ\n\n'Learn' પેજ પર લોન પાઠ વાંચો!"
+      : "🏦 Loan Safety:\n\n• Fee before loan disbursement = scam\n• Only choose RBI-registered lenders\n• Guaranteed approval without document check = fake\n• CIBIL Score 700+ makes loans easier\n• Loan offers via WhatsApp/SMS = suspicious\n\nRead the loan lessons on the Learn page!";
+  }
+
+  // ── Investment Questions ──
+  if (/\binvestment\b|mutual fund|fd|rd|fixed deposit|રોકાણ|એફડી|આરડી/.test(lower)) {
+    return lang === "gu"
+      ? "📈 રોકાણ મૂળભૂત:\n\n• FD/RD = બેંકમાં સલામત, DICGC વીમા ₹5 લાખ સુધી\n• મ્યુચ્યુઅલ ફંડ = શેર બજારમાં રોકાણ, નફો-નુકસાન બંને\n• 'ગેરંટીડ રિટર્ન' = હમેશા શંકાસ્પદ\n• SEBI/RBI નોંધાયેલ એજન્ટ/એપ જ વાપરો\n• Ponzi scheme = નવા રોકાણકારના પૈસાથી જૂનાને ચૂકવે\n\n'Learn' પેજ પર રોકાણ પાઠ વાંચો!"
+      : "📈 Investment Basics:\n\n• FD/RD = safe in bank, DICGC insurance up to ₹5 lakh\n• Mutual funds = stock market investment, profit/loss both possible\n• 'Guaranteed returns' = always suspicious\n• Only use SEBI/RBI-registered agents/apps\n• Ponzi scheme = pays old investors with new investors' money\n\nRead investment lessons on the Learn page!";
+  }
+
   if (/\breport\b|ફરિયાદ|complaint|helpline/.test(lower)) {
     return lang === "gu"
       ? "છેતરપિંડીની ફરિયાદ કરવા:\n1. 1930 પર ફોન કરો (National Cyber Crime Helpline)\n2. cybercrime.gov.in પર ઓનલાઇન ફરિયાદ કરો\n3. RBI Sachet: sachet.rbi.org.in\n\nજેટલી વહેલી ફરિયાદ, એટલી વધુ પૈસા પાછા મળવાની શક્યતા."
@@ -75,16 +102,6 @@ function getLocalResponse(msg: string, lang: string): string {
     return lang === "gu"
       ? "🔑 OTP, PIN અને CVV ગુપ્ત છે.\n\n• બેંક ક્યારેય ફોન કે SMS દ્વારા OTP માંગતી નથી\n• કોઈ 'અધિકારી' OTP માંગે તો તે છેતરનાર છે\n• OTP શેર કર્યા પછી પૈસા પાછા મેળવવા ખૂબ મુશ્કેલ છે"
       : "🔑 OTP, PIN and CVV are secret.\n\n• Banks never ask for OTP via call or SMS\n• Anyone asking for OTP is a scammer\n• Once shared, recovering money is very difficult";
-  }
-  if (/\bupi\b|\bcollect\b|કલેક્ટ|\bqr\b/.test(lower)) {
-    return lang === "gu"
-      ? "💸 UPI સલામતી:\n\n• પૈસા મેળવવા ક્યારેય PIN દાખલ ન કરો\n• 'Collect request' મંજૂર = પૈસા જાય છે\n• QR સ્કેન + PIN = પૈસા મોકલો, મેળવો નહીં\n• ₹1-₹2 ની ટેસ્ટ વિનંતી = મોટી છેતરપિંડી પહેલાની તપાસ"
-      : "💸 UPI Safety:\n\n• Never enter PIN to RECEIVE money\n• Approving a 'collect request' SENDS money out\n• QR scan + PIN = sending money, not receiving\n• ₹1-₹2 test requests are verification before a bigger scam";
-  }
-  if (/\bloan\b|લોન|ऋण/.test(lower)) {
-    return lang === "gu"
-      ? "🏦 નકલી લોન એપ ઓળખો:\n\n• લોન આપતા પહેલા ફી માંગે = છેતરપિંડી\n• ફોનની બધી પરવાનગી માંગે = ખતરનાક\n• RBI સાથે નોંધાયેલ છે કે તપાસો\n• WhatsApp/SMS દ્વારા લોન ઓફર = શંકાસ્પદ"
-      : "🏦 Spotting fake loan apps:\n\n• Asks for fee before giving loan = scam\n• Demands all phone permissions = dangerous\n• Check if lender is RBI-registered\n• Loan offers via WhatsApp/SMS = suspicious";
   }
   if (/\bscam\b|\bfraud\b|છેતરપિંડી|ધોખ|common scams/.test(lower)) {
     return lang === "gu"
@@ -98,8 +115,8 @@ function getLocalResponse(msg: string, lang: string): string {
   }
 
   return lang === "gu"
-    ? "હું Rakshak AI ચેટ સહાયક છું. હું ઓનલાઇન બેંકિંગ સલામતી, છેતરપિંડી ઓળખવા, અને ફરિયાદ કરવામાં મદદ કરી શકું.\n\n'SMS તપાસો' કે 'વેબસાઇટ તપાસો' દબાવો, અથવા OTP, UPI, લોન, છેતરપિંડી વિશે પૂછો."
-    : "I'm the Rakshak AI chat assistant. I can help with online banking safety, identifying scams, and reporting fraud.\n\nTap 'Analyze SMS' or 'Check Website' above, or ask about OTP, UPI, loans, or common scams.";
+    ? "હું Rakshak AI ચેટ સહાયક છું. હું ઓનલાઇન બેંકિંગ સલામતી, છેતરપિંડી ઓળખવા, અને ફરિયાદ કરવામાં મદદ કરી શકું.\n\n'SMS તપાસો' કે 'વેબસાઇટ તપાસો' દબાવો, અથવા OTP, UPI, લોન, રોકાણ, છેતરપિંડી વિશે પૂછો."
+    : "I'm the Rakshak AI chat assistant. I can help with online banking safety, identifying scams, and reporting fraud.\n\nTap 'Analyze SMS' or 'Check Website' above, or ask about OTP, UPI, loans, investments, or common scams.";
 }
 
 function ResultCard({ result, lang }: { result: AnalysisResult; lang: string }) {
@@ -154,7 +171,6 @@ export default function ChatAssistant() {
     setMessages((m) => [...m, { role: "user", text: text.trim(), time: now() }]);
     setInput("");
 
-    // Real analysis mode: run the actual detection engine, not a canned reply.
     if (mode === "sms" || mode === "url") {
       const kind = mode;
       setMode("idle");
@@ -175,7 +191,6 @@ export default function ChatAssistant() {
       return;
     }
 
-    // Informational Q&A: local knowledge base, instant.
     setTyping(true);
     setTimeout(() => {
       pushAssistant(getLocalResponse(text, lang));
