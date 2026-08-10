@@ -4,8 +4,8 @@
   "description": "AI-powered scam detection to protect first-time digital banking users.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a3c6e",
-  "theme_color": "##1a3c6e",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -28,12 +28,22 @@
   ],
   "share_target": {
     "action": "/share-target",
-    "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
+    "method": "POST",
+    "enctype": "multipart/form-data",
     "params": {
       "title": "title",
       "text": "text",
-      "url": "url"
+      "url": "url",
+      "files": [
+        {
+          "name": "photo",
+          "accept": ["image/*"]
+        },
+        {
+          "name": "recording",
+          "accept": ["audio/*", ".mp3", ".m4a", ".wav", ".ogg", ".aac", ".3gp", ".amr"]
+        }
+      ]
     }
   }
 }

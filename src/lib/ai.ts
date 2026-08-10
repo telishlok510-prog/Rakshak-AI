@@ -21,6 +21,12 @@ import { collectSignals, heuristicAnalyze } from "./detection";
  * To avoid hitting that limit quickly, we support multiple API keys and
  * rotate between them. If a key gets rate-limited (429), we automatically
  * try the next key before giving up and falling back to the heuristic engine.
+ *
+ * MULTIMODAL IMAGE ANALYSIS (NEW):
+ * When a user opts in, screenshots are sent to Gemini as inline images.
+ * Gemini analyzes BOTH visual elements (logos, UI, colors, layout) AND
+ * text content to detect visual phishing, fake app interfaces, and forged
+ * bank screens that OCR alone cannot catch.
  */
 
 const LANG_NAME: Record<LanguageCode, string> = {
@@ -33,7 +39,7 @@ const KIND_LABEL: Record<CheckKind, string> = {
   upi: "a UPI payment request",
   url: "a website or payment link",
   call: "a description of a phone call",
-  screenshot: "text extracted from a screenshot",
+  screenshot: "a screenshot image",
 };
 
 // ---------------------------------------------------------------------------
@@ -87,7 +93,7 @@ export function getRotatedKeys(): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Prompt building (unchanged)
+// Prompt building
 // ---------------------------------------------------------------------------
 
 function buildSystemPrompt(language: LanguageCode): string {
@@ -102,6 +108,49 @@ function buildSystemPrompt(language: LanguageCode): string {
     "- A UPI 'collect' request DEDUCTS money; it never adds money.",
     "- Urgency, threats, prize/lottery bait, and shortened or look-alike bank",
     "  domains are strong scam signals.",
+    "- Be protective but not alarmist. If genuinely safe, say so.",
+    `- Write 'reason', 'safetyTip', every indicator 'label'/'detail', and each`,
+    `  recommended action in ${LANG_NAME[language]}.`,
+    "",
+    "Respond with ONLY a JSON object (no markdown, no code fences) shaped like:",
+    "{",
+    '  "risk": "scam" | "suspicious" | "safe",',
+    '  "confidence": number (0-100, probability it is a scam),',
+    '  "reason": string,',
+    '  "indicators": [{ "label": string, "detail": string }],',
+    '  "recommendedActions": [string],',
+    '  "safetyTip": string,',
+    '  "highlights": [string]',
+    "}",
+  ].join("\n");
+}
+
+/** System prompt specifically for image analysis — asks Gemini to look at visuals. */
+function buildImageSystemPrompt(language: LanguageCode): string {
+  return [
+    "You are the scam-detection engine for Rakshak AI, a tool that protects",
+    "first-time digital-banking users in rural India from financial fraud.",
+    "You are analyzing a SCREENSHOT IMAGE. Look at BOTH the visual design",
+    "(logos, colors, layout, buttons, URL bar) AND any text in the image.",
+    "",
+    "Visual checks to perform:",
+    "- Is this a fake bank/app login screen? (wrong logo, misspelled name,",
+    "  unusual colors, low-quality graphics)",
+    "- Is the URL in the address bar suspicious? (typosquatting, not https,",
+    "  weird domain like sbi-verify.xyz instead of sbi.co.in)",
+    "- Are there fake urgency banners (red warnings, countdown timers)?",
+    "- Does it ask for OTP/PIN/CVV on a screen that looks like a bank?",
+    "- Is it a fake UPI payment screen with wrong payee details?",
+    "- Are there visual inconsistencies (blurry logos, mismatched fonts)?",
+    "",
+    "Text checks to perform:",
+    "- Fake bank domains, urgency words, prize/lottery bait",
+    "- Requests for OTP, PIN, CVV, passwords",
+    "- UPI collect requests disguised as receive requests",
+    "",
+    "Rules:",
+    "- Real banks / RBI NEVER ask for OTP, PIN, CVV or passwords.",
+    "- A UPI 'collect' request DEDUCTS money; it never adds money.",
     "- Be protective but not alarmist. If genuinely safe, say so.",
     `- Write 'reason', 'safetyTip', every indicator 'label'/'detail', and each`,
     `  recommended action in ${LANG_NAME[language]}.`,
@@ -195,10 +244,34 @@ function buildUserPrompt(kind: CheckKind, text: string, signalHint: string): str
   ].join("\n");
 }
 
+/** Build prompt for image analysis — includes OCR text as grounding context. */
+function buildImageUserPrompt(
+  kind: CheckKind,
+  text: string,
+  signalHint: string
+): string {
+  return [
+    `Please analyze this screenshot image.`,
+    signalHint,
+    "",
+    "Additionally, here is the text extracted from the image by OCR (for reference):",
+    '"""',
+    text.slice(0, 2000),
+    '"""',
+    "",
+    "Look carefully at the image for visual scam signs like fake logos,",
+    "suspicious URLs, fake bank interfaces, urgency banners, and incorrect",
+    "UPI screens. Combine visual clues with the text above.",
+  ].join("\n");
+}
+
 // ---------------------------------------------------------------------------
 // Single-key call (one attempt against one specific key)
 // ---------------------------------------------------------------------------
 
+/**
+ * Call Gemini with text-only content.
+ */
 async function callGeminiOnce(
   apiKey: string,
   model: string,
@@ -228,10 +301,56 @@ async function callGeminiOnce(
   return raw.length > 20 ? parseJson(raw) : null;
 }
 
+/**
+ * Call Gemini with image + text (multimodal).
+ * Sends the image as inlineData alongside the analysis prompt.
+ */
+async function callGeminiImageOnce(
+  apiKey: string,
+  model: string,
+  kind: CheckKind,
+  text: string,
+  imageBase64: string,
+  mimeType: string,
+  language: LanguageCode,
+  signalHint: string
+): Promise<Record<string, unknown> | null> {
+  const client = new GoogleGenAI({ apiKey });
+
+  const response = await client.models.generateContent({
+    model,
+    contents: [
+      { text: buildImageUserPrompt(kind, text, signalHint) },
+      {
+        inlineData: {
+          mimeType,
+          data: imageBase64,
+        },
+      },
+    ],
+    config: {
+      systemInstruction: buildImageSystemPrompt(language),
+      maxOutputTokens: 8192,
+    },
+  });
+
+  const parts = response.candidates?.[0]?.content?.parts ?? [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const raw = (parts as any[])
+    .filter((p) => typeof p.text === "string" && !p.thought)
+    .map((p) => p.text as string)
+    .join("");
+
+  return raw.length > 20 ? parseJson(raw) : null;
+}
+
 // ---------------------------------------------------------------------------
-// Main entry point
+// Main entry points
 // ---------------------------------------------------------------------------
 
+/**
+ * Analyze text-only content (existing behavior, unchanged).
+ */
 export async function analyzeWithAI(
   kind: CheckKind,
   text: string,
@@ -294,5 +413,81 @@ export async function analyzeWithAI(
   }
 
   console.error("[RakshakAI] All Gemini keys failed, using fallback:", lastErr);
+  return fallback;
+}
+
+/**
+ * NEW: Analyze a screenshot image using Gemini's multimodal vision capability.
+ * Sends the image + OCR text + heuristic signals to Gemini.
+ * Falls back to heuristicAnalyze if no API keys or all fail.
+ */
+export async function analyzeImageWithAI(
+  kind: CheckKind,
+  text: string,
+  imageBase64: string,
+  mimeType: string,
+  language: LanguageCode
+): Promise<AnalysisResult> {
+  const keys = getRotatedKeys();
+
+  console.log(
+    `[RakshakAI][DEBUG][Image] Found ${keys.length} Gemini key(s) at runtime.`
+  );
+
+  // No key configured -> offline demo mode (OCR + heuristic only).
+  if (keys.length === 0) return heuristicAnalyze(kind, text, language);
+
+  const signals = collectSignals(kind, text);
+  const signalHint = signals.length
+    ? `Detected signals (codes): ${signals.map((s) => s.code).join(", ")}.`
+    : "No strong rule-based signals were detected.";
+
+  const fallback = heuristicAnalyze(kind, text, language);
+  const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
+
+  let lastErr: unknown;
+
+  for (let i = 0; i < keys.length; i++) {
+    const apiKey = keys[i];
+    console.log(
+      `[RakshakAI][DEBUG][Image] Trying key #${i + 1} of ${keys.length}...`
+    );
+    try {
+      const parsed = await callGeminiImageOnce(
+        apiKey,
+        model,
+        kind,
+        text,
+        imageBase64,
+        mimeType,
+        language,
+        signalHint
+      );
+      console.log(`[RakshakAI][DEBUG][Image] Key #${i + 1} succeeded.`);
+      if (!parsed) return fallback;
+      return toAnalysisResult(parsed, fallback, "gemini");
+    } catch (e: unknown) {
+      lastErr = e;
+      const status = (e as { status?: number }).status;
+      const message = e instanceof Error ? e.message : String(e);
+
+      console.error(
+        `[RakshakAI][DEBUG][Image] Key #${i + 1} FAILED. status=${status} message=${message}`
+      );
+
+      if (status === 429) {
+        console.warn(
+          `[RakshakAI][Image] Key #${i + 1} rate-limited (429), trying next key...`
+        );
+        continue;
+      }
+      break;
+    }
+  }
+
+  console.error(
+    "[RakshakAI][Image] All Gemini keys failed, using fallback:",
+    lastErr
+  );
   return fallback;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import type { CheckKind } from "@/lib/types";
@@ -27,6 +27,13 @@ const SAMPLES: Partial<Record<Tab, string>> = {
   call: "Caller said he is from RBI, my account will be blocked in 1 hour, and asked me to share the OTP to keep it active.",
 };
 
+/** Convert a base64 data URL (from sessionStorage) back into a real File. */
+async function dataUrlToFile(dataUrl: string, filename: string): Promise<File> {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], filename, { type: blob.type });
+}
+
 function CheckInner() {
   const { t } = useI18n();
   const params = useSearchParams();
@@ -36,15 +43,38 @@ function CheckInner() {
   const sharedMessage = params.get("message");
   const isAutofill = params.get("autofill") === "1" && !!sharedMessage;
 
+  // Photo shared in from Gallery, and (pending CallChecker wiring) a call
+  // recording shared in from Files — both were stashed into sessionStorage
+  // by the /share-target POST route because files are too large for a URL.
+  const [sharedPhotoFile, setSharedPhotoFile] = useState<File | null>(null);
+  const [sharedRecordingFile, setSharedRecordingFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const storedPhoto = sessionStorage.getItem("rakshak_shared_photo");
+    if (storedPhoto) {
+      sessionStorage.removeItem("rakshak_shared_photo");
+      dataUrlToFile(storedPhoto, "shared-screenshot.jpg")
+        .then(setSharedPhotoFile)
+        .catch((e) => console.error("[RakshakAI] Failed to load shared photo:", e));
+    }
+
+    const storedRecording = sessionStorage.getItem("rakshak_shared_recording");
+    if (storedRecording) {
+      sessionStorage.removeItem("rakshak_shared_recording");
+      dataUrlToFile(storedRecording, "shared-recording.m4a")
+        .then(setSharedRecordingFile)
+        .catch((e) => console.error("[RakshakAI] Failed to load shared recording:", e));
+    }
+  }, []);
+
   // If something was shared in, always land on the SMS tab (that's the
   // most common real-world source of a forwarded scam message) unless a
   // specific tab was explicitly requested in the URL.
   const requestedTab = params.get("tab") as Tab | null;
-  const initial: Tab = requestedTab && TABS.some((x) => x.id === requestedTab)
-    ? requestedTab
-    : isAutofill
-      ? "sms"
-      : "sms";
+  const initial: Tab =
+    requestedTab && TABS.some((x) => x.id === requestedTab) ? requestedTab : "sms";
   const [tab, setTab] = useState<Tab>(initial);
 
   return (
@@ -55,6 +85,16 @@ function CheckInner() {
       {isAutofill && (
         <p className="mt-3 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
           {t("check.sharedMessageNotice") || "Message loaded from share — review and analyze below."}
+        </p>
+      )}
+      {sharedPhotoFile && (
+        <p className="mt-3 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+          {t("check.sharedPhotoNotice") || "Photo loaded from share — analyzing below."}
+        </p>
+      )}
+      {sharedRecordingFile && (
+        <p className="mt-3 rounded-lg bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+          {t("check.sharedRecordingNotice") || "Recording loaded from share — transcribing below."}
         </p>
       )}
 
@@ -88,11 +128,11 @@ function CheckInner() {
       {/* Panel */}
       <div className="card mt-6">
         {tab === "screenshot" ? (
-          <ScreenshotChecker />
+          <ScreenshotChecker initialFile={sharedPhotoFile} />
         ) : tab === "upi" ? (
           <UpiChecker sample={SAMPLES.upi} />
         ) : tab === "call" ? (
-          <CallChecker sample={SAMPLES.call} />
+          <CallChecker sample={SAMPLES.call} initialRecordingFile={sharedRecordingFile} />
         ) : (
           <TextChecker
             key={tab}

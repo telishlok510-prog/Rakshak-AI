@@ -13,9 +13,17 @@ type Mode = "text" | "recording";
  * default since it's the most reliable path; uploading a recording is offered
  * as an alternative for calls the user wants to double-check after the fact.
  */
-export default function CallChecker({ sample }: { sample?: string }) {
+export default function CallChecker({
+  sample,
+  initialRecordingFile,
+}: {
+  sample?: string;
+  /** If set (e.g. a recording shared in from the Android share sheet), the
+   * checker opens directly in "recording" mode with this file auto-loaded. */
+  initialRecordingFile?: File | null;
+}) {
   const { lang } = useI18n();
-  const [mode, setMode] = useState<Mode>("text");
+  const [mode, setMode] = useState<Mode>(initialRecordingFile ? "recording" : "text");
 
   return (
     <div>
@@ -45,7 +53,7 @@ export default function CallChecker({ sample }: { sample?: string }) {
       {mode === "text" ? (
         <TextChecker kind="call" placeholderKey="check.placeholder.call" sample={sample} />
       ) : (
-        <CallRecordingChecker />
+        <CallRecordingChecker initialFile={initialRecordingFile} />
       )}
     </div>
   );

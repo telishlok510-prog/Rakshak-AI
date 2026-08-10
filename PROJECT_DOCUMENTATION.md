@@ -7,7 +7,7 @@
 **Problem Statement:** Financial Safety for Rural India  
 **Developer:** Solo Developer  
 **Live URL:** (Vercel deployment)  
-**Repository:** https://github.com/telishlok510-prog/Rakshak-AI
+**Repository:** 
 
 ---
 

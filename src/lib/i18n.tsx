@@ -13,7 +13,7 @@ export const LANGUAGES: { code: LanguageCode; label: string; native: string }[] 
   { code: "en", label: "English", native: "English" },
   { code: "gu", label: "Gujarati", native: "ગુજરાતી" },
 ];
-
+ī
 type Dict = Record<string, string>;
 
 const STRINGS: Record<LanguageCode, Dict> = {
@@ -154,6 +154,15 @@ const STRINGS: Record<LanguageCode, Dict> = {
     "check.screenshot.reading": "Reading text from image...",
     "check.screenshot.extracted": "Text we read from your image:",
     "check.emptyError": "Please enter something to check.",
+    // ── NEW: Multimodal Image Analysis strings ──
+    "check.screenshot.modeLabel": "Analysis Mode",
+    "check.screenshot.modeOCR": "Basic OCR (Private)",
+    "check.screenshot.modeAI": "Advanced AI Analysis",
+    "check.screenshot.ocrPrivacy": "Privacy-first:",
+    "check.screenshot.ocrDesc": "Image stays on your device. Only extracted text is analyzed. Good for most screenshots.",
+    "check.screenshot.aiWarning": "Privacy notice:",
+    "check.screenshot.aiDesc": "The image will be sent to Google Gemini AI to detect fake logos, suspicious designs, and visual fraud that text alone cannot catch. No personal data is stored.",
+    "check.screenshot.aiAnalyzing": "Analyzing image with AI... checking logos, layout, and text...",
     "result.safe": "Looks Safe",
     "result.suspicious": "Be Careful",
     "result.scam": "Likely Scam",
@@ -335,6 +344,15 @@ const STRINGS: Record<LanguageCode, Dict> = {
     "check.screenshot.reading": "ઇમેજમાંથી ટેક્સ્ટ વાંચી રહ્યા છીએ...",
     "check.screenshot.extracted": "તમારી ઇમેજમાંથી વાંચેલો ટેક્સ્ટ:",
     "check.emptyError": "કૃપા કરીને તપાસવા માટે કંઈક દાખલ કરો.",
+    // ── NEW: Multimodal Image Analysis strings ──
+    "check.screenshot.modeLabel": "વિશ્લેષણ મોડ",
+    "check.screenshot.modeOCR": "બેઝિક OCR (ખાનગી)",
+    "check.screenshot.modeAI": "એડવાન્સ AI વિશ્લેષણ",
+    "check.screenshot.ocrPrivacy": "ખાનગી-પ્રથમ:",
+    "check.screenshot.ocrDesc": "ઇમેજ તમારા ડિવાઇસ પર જ રહે છે. ફક્ત કાઢેલો ટેક્સ્ટ તપાસાય છે. બધા સ્ક્રીનશોટ માટે સારું.",
+    "check.screenshot.aiWarning": "ખાનગી સૂચના:",
+    "check.screenshot.aiDesc": "ઇમેજ Google Gemini AI ને મોકલવામાં આવશે જેથી નકલી લોગો, શંકાસ્પદ ડિઝાઇન અને દ્રશ્ય છેતરપિંડી શોધી શકાય જે ટેક્સ્ટ એકલાથી પકડી શકતું નથી. કોઈ વ્યક્તિગત ડેટા સંગ્રહાતો નથી.",
+    "check.screenshot.aiAnalyzing": "AI સાથે ઇમેજનું વિશ્લેષણ કરી રહ્યા છીએ... લોગો, લેઆઉટ અને ટેક્સ્ટ તપાસી રહ્યા છીએ...",
     "result.safe": "સલામત લાગે છે",
     "result.suspicious": "સાવધાન રહો",
     "result.scam": "સંભવિત છેતરપિંડી",

@@ -16,6 +16,10 @@ export type IndicatorCode =
   | "UPI_COLLECT"
   | "UPI_SMALL_AMOUNT"
   | "CALL_IMPERSONATION"
+  /** Visual / image-specific indicators (used by multimodal AI analysis) */
+  | "FAKE_LOGO"
+  | "SUSPICIOUS_UI"
+  | "VISUAL_MISMATCH"
   | "GENERIC";
 
 export interface DetectedIndicator {
@@ -28,10 +32,20 @@ export interface DetectedIndicator {
   matches: string[];
 }
 
+/** Standard text-only analysis request. */
 export interface AnalyzeRequest {
   kind: CheckKind;
   text: string;
   language: LanguageCode;
+}
+
+/** Image analysis request (screenshot with optional AI visual analysis). */
+export interface AnalyzeImageRequest extends AnalyzeRequest {
+  /** Base64-encoded image (with or without data: prefix) */
+  image: string;
+  /** When true, sends image to Gemini for visual analysis.
+   *  When false/omitted, uses on-device OCR + heuristic only. */
+  useAI: boolean;
 }
 
 export interface AnalysisResult {

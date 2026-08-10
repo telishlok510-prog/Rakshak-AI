@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { analyze } from "@/lib/api";
 import type { AnalysisResult } from "@/lib/types";
@@ -14,7 +14,14 @@ import RiskResult from "@/components/RiskResult";
  * for scam indicators. The user can edit the transcript before checking.
  */
 
-export default function CallRecordingChecker() {
+export default function CallRecordingChecker({
+  initialFile,
+}: {
+  /** If set (e.g. a recording shared in from Files/Google Files via the
+   * Android share sheet), this file is transcribed + analyzed automatically
+   * on mount — same as if the user had just picked it from the file input. */
+  initialFile?: File | null;
+}) {
   const { t, lang } = useI18n();
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [transcript, setTranscript] = useState("");
@@ -66,6 +73,17 @@ export default function CallRecordingChecker() {
       setTranscribing(false);
     }
   };
+
+  // If a recording was shared in from another app (Android share sheet ->
+  // Files/Google Files), transcribe + analyze it automatically once on
+  // mount — the user already chose to share it here specifically to have
+  // it checked.
+  useEffect(() => {
+    if (initialFile) {
+      handleFile(initialFile);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const run = async () => {
     if (!transcript.trim()) {
