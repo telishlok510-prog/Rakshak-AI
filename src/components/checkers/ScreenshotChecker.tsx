@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { analyze } from "@/lib/api";
 import type { AnalysisResult } from "@/lib/types";
@@ -17,7 +17,14 @@ import { logCheck } from "@/lib/activity";
  *    Catches fake logos, suspicious UI, forged screens that OCR misses.
  *    User must explicitly opt in with a privacy warning.
  */
-export default function ScreenshotChecker() {
+export default function ScreenshotChecker({
+  initialFile,
+}: {
+  /** If set (e.g. a photo shared in from the Android share sheet), this
+   * file is analyzed automatically on mount — same as if the user had
+   * just picked it from the file input. */
+  initialFile?: File | null;
+}) {
   const { t, lang } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -80,6 +87,16 @@ export default function ScreenshotChecker() {
       setStatus("idle");
     }
   };
+
+  // If a file was shared in from another app (Android share sheet ->
+  // Gallery), analyze it automatically once on mount — the user already
+  // chose to share it here specifically to have it checked.
+  useEffect(() => {
+    if (initialFile) {
+      handleFile(initialFile);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** Text-only analysis via existing API helper (OCR text, no image upload). */
   const runTextAnalysis = async (textOut: string) => {
