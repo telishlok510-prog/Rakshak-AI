@@ -1,4 +1,3 @@
-import { kv } from "@vercel/kv";
 import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
 
 export const runtime = "nodejs";
@@ -7,7 +6,7 @@ export const runtime = "nodejs";
  * POST /api/alerts/subscribe
  * 
  * Subscribe to scam alerts for a specific district.
- * Stores push subscription in Vercel KV, keyed by district.
+ * In development mode without KV: logs to console instead.
  */
 
 export async function POST(request: Request) {
@@ -38,6 +37,29 @@ export async function POST(request: Request) {
     }
 
     const districtSlug = slugifyDistrict(district);
+    
+    // Check if KV is configured
+    const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+    
+    if (!hasKV) {
+      // Development mode without KV - just log and return success
+      console.log("=================================");
+      console.log("[Alerts] DEV MODE - No KV configured");
+      console.log("[Alerts] Would subscribe to:", districtSlug);
+      console.log("[Alerts] Subscription endpoint:", subscription.endpoint?.substring(0, 50) + "...");
+      console.log("=================================");
+      
+      return Response.json({
+        success: true,
+        district: districtSlug,
+        totalSubscribers: 1,
+        devMode: true,
+        message: "Development mode: subscription logged but not saved (KV not configured)"
+      });
+    }
+
+    // Production mode with KV
+    const { kv } = await import("@vercel/kv");
     const kvKey = `subs:${districtSlug}`;
 
     // Get existing subscriptions for this district
@@ -72,7 +94,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[Alerts] Subscribe failed:", error);
     return Response.json(
-      { error: "Subscription failed" },
+      { 
+        error: "Subscription failed",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

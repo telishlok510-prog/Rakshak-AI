@@ -1,4 +1,3 @@
-import { kv } from "@vercel/kv";
 import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
 
 export const runtime = "nodejs";
@@ -37,6 +36,28 @@ export async function POST(request: Request) {
     }
 
     const districtSlug = slugifyDistrict(district);
+    
+    // Check if KV is configured
+    const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+    
+    if (!hasKV) {
+      // Development mode without KV
+      console.log("=================================");
+      console.log("[Alerts] DEV MODE - No KV configured");
+      console.log("[Alerts] Would unsubscribe from:", districtSlug);
+      console.log("=================================");
+      
+      return Response.json({
+        success: true,
+        district: districtSlug,
+        remainingSubscribers: 0,
+        devMode: true,
+        message: "Development mode: unsubscribe logged but not processed (KV not configured)"
+      });
+    }
+
+    // Production mode with KV
+    const { kv } = await import("@vercel/kv");
     const kvKey = `subs:${districtSlug}`;
 
     // Get existing subscriptions
@@ -66,7 +87,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[Alerts] Unsubscribe failed:", error);
     return Response.json(
-      { error: "Unsubscribe failed" },
+      { 
+        error: "Unsubscribe failed",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

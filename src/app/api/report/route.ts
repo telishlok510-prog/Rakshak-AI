@@ -1,10 +1,12 @@
-import { kv } from "@vercel/kv";
 import webpush from "web-push";
 import { analyzeReportForAlert } from "@/lib/ai";
 import { slugifyDistrict, isValidDistrict, type StoredReport } from "@/lib/alerts";
 import type { LanguageCode } from "@/lib/types";
 
 export const runtime = "nodejs";
+
+// Check if KV is configured
+const hasKV = () => Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
 // Configure VAPID details for web-push
 if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT) {
@@ -69,6 +71,32 @@ export async function POST(request: Request) {
     const analysis = await analyzeReportForAlert(reportText, language);
     console.log(`[Report] Analysis complete: ${analysis.category}`);
 
+    // Check if KV is configured
+    if (!hasKV()) {
+      console.log("=================================");
+      console.log("[Report] DEV MODE - No KV configured");
+      console.log("[Report] District:", districtSlug);
+      console.log("[Report] Category:", analysis.category);
+      console.log("[Report] Summary:", analysis.summary);
+      console.log("[Report] Prevention Tip:", analysis.preventionTip);
+      console.log("=================================");
+      
+      return Response.json({
+        success: true,
+        analysis: {
+          category: analysis.category,
+          summary: analysis.summary,
+          preventionTip: analysis.preventionTip,
+        },
+        district: districtSlug,
+        devMode: true,
+        message: "Development mode: report analyzed but not saved (KV not configured)"
+      });
+    }
+
+    // Production mode: store in KV
+    const { kv } = await import("@vercel/kv");
+
     // Step 2: Store report in KV (last 50 reports per district)
     const reportsKey = `reports:${districtSlug}`;
     const existingReports = (await kv.get<StoredReport[]>(reportsKey)) || [];
@@ -120,6 +148,12 @@ async function sendNotificationsToDistrict(
   category: string,
   preventionTip: string
 ): Promise<void> {
+  if (!hasKV()) {
+    console.log(`[Report] DEV MODE - Would send notifications to ${districtSlug} subscribers`);
+    return;
+  }
+
+  const { kv } = await import("@vercel/kv");
   const subsKey = `subs:${districtSlug}`;
   const subscriptions = (await kv.get<PushSubscriptionJSON[]>(subsKey)) || [];
 
