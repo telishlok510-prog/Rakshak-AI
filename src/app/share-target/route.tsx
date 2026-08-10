@@ -45,6 +45,11 @@ export async function POST(request: Request) {
     const photo = formData.get("photo") as File | null;
     const recording = formData.get("recording") as File | null;
 
+    // TEMPORARY DEBUG LOG — shows up in Vercel Runtime Logs (server-side).
+    console.log(
+      `[RakshakAI][share-target][DEBUG] photo=${photo ? `${photo.name} (${photo.size} bytes, ${photo.type})` : "none"} recording=${recording ? `${recording.name} (${recording.size} bytes)` : "none"} title=${title} text=${text} url=${url}`
+    );
+
     // Case 1: a screenshot was shared from Gallery
     if (photo && photo.size > 0) {
       const buffer = Buffer.from(await photo.arrayBuffer());

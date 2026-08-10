@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import TextChecker from "./TextChecker";
 import CallRecordingChecker from "./CallRecordingChecker";
@@ -19,11 +19,20 @@ export default function CallChecker({
 }: {
   sample?: string;
   /** If set (e.g. a recording shared in from the Android share sheet), the
-   * checker opens directly in "recording" mode with this file auto-loaded. */
+   * checker switches to "recording" mode with this file auto-loaded. */
   initialRecordingFile?: File | null;
 }) {
   const { lang } = useI18n();
   const [mode, setMode] = useState<Mode>(initialRecordingFile ? "recording" : "text");
+
+  // initialRecordingFile often arrives AFTER first mount (the parent
+  // converts it from sessionStorage asynchronously), so the initial
+  // useState value above can miss it. Switch modes when it shows up.
+  useEffect(() => {
+    if (initialRecordingFile) {
+      setMode("recording");
+    }
+  }, [initialRecordingFile]);
 
   return (
     <div>

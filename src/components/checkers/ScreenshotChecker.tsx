@@ -27,6 +27,9 @@ export default function ScreenshotChecker({
 }) {
   const { t, lang } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Tracks which initialFile we've already auto-analyzed, so we don't
+  // re-trigger if the parent re-renders with the same file.
+  const handledInitialFileRef = useRef<File | null>(null);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -92,14 +95,18 @@ export default function ScreenshotChecker({
   };
 
   // If a file was shared in from another app (Android share sheet ->
-  // Gallery), analyze it automatically once on mount — the user already
-  // chose to share it here specifically to have it checked.
+  // Gallery), analyze it automatically once it arrives. initialFile often
+  // arrives AFTER first mount (the parent converts it from sessionStorage
+  // asynchronously), so this must depend on initialFile — not run once on
+  // mount with an empty array — or it fires too early with null and never
+  // fires again.
   useEffect(() => {
-    if (initialFile) {
+    if (initialFile && handledInitialFileRef.current !== initialFile) {
+      handledInitialFileRef.current = initialFile;
       handleFile(initialFile);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialFile]);
 
   /** Text-only analysis via existing API helper (OCR text, no image upload). */
   const runTextAnalysis = async (textOut: string) => {

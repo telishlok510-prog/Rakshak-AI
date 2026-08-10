@@ -30,6 +30,9 @@ export default function CallRecordingChecker({
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  // Tracks which initialFile we've already auto-analyzed, so we don't
+  // re-trigger if the parent re-renders with the same file.
+  const handledInitialFileRef = useRef<File | null>(null);
 
   const handleFile = async (file: File) => {
     setResult(null);
@@ -75,15 +78,18 @@ export default function CallRecordingChecker({
   };
 
   // If a recording was shared in from another app (Android share sheet ->
-  // Files/Google Files), transcribe + analyze it automatically once on
-  // mount — the user already chose to share it here specifically to have
-  // it checked.
+  // Files/Google Files), transcribe + analyze it automatically once it
+  // arrives. initialFile often arrives AFTER first mount (the parent
+  // converts it from sessionStorage asynchronously), so this must depend
+  // on initialFile — not run once on mount with an empty array — or it
+  // fires too early with null and never fires again.
   useEffect(() => {
-    if (initialFile) {
+    if (initialFile && handledInitialFileRef.current !== initialFile) {
+      handledInitialFileRef.current = initialFile;
       handleFile(initialFile);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialFile]);
 
   const run = async () => {
     if (!transcript.trim()) {
