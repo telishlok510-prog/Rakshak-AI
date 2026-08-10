@@ -59,6 +59,8 @@ export default function AlertOptIn() {
   };
 
   const handleSubscribe = async () => {
+    console.log("[AlertOptIn] Subscribe clicked, district:", selectedDistrict);
+    
     if (!selectedDistrict) {
       setError(lang === "gu" ? "કૃપા કરીને જિલ્લો પસંદ કરો" : "Please select a district");
       return;
@@ -74,8 +76,11 @@ export default function AlertOptIn() {
     setState("requesting");
 
     try {
+      console.log("[AlertOptIn] Requesting notification permission...");
+      
       // Request notification permission
       const permission = await Notification.requestPermission();
+      console.log("[AlertOptIn] Permission result:", permission);
       
       if (permission !== "granted") {
         setState("denied");
@@ -88,21 +93,31 @@ export default function AlertOptIn() {
         return;
       }
 
+      console.log("[AlertOptIn] Getting service worker registration...");
+      
       // Get service worker registration
       const registration = await navigator.serviceWorker.ready;
+      console.log("[AlertOptIn] Service worker ready");
       
       // Subscribe to push notifications
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      console.log("[AlertOptIn] VAPID public key available:", !!publicKey);
+      
       if (!publicKey) {
-        throw new Error("VAPID public key not configured");
+        throw new Error("VAPID public key not configured. Check NEXT_PUBLIC_VAPID_PUBLIC_KEY environment variable.");
       }
 
+      console.log("[AlertOptIn] Subscribing to push manager...");
+      
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
       });
+      
+      console.log("[AlertOptIn] Push subscription created");
 
       // Save subscription to server
+      console.log("[AlertOptIn] Saving to server...");
       const response = await fetch("/api/alerts/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -114,22 +129,28 @@ export default function AlertOptIn() {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Subscription failed");
+        console.error("[AlertOptIn] Server error:", data);
+        throw new Error(data.error || `Subscription failed (${response.status})`);
       }
+
+      const result = await response.json();
+      console.log("[AlertOptIn] Server response:", result);
 
       // Save district to localStorage
       localStorage.setItem("rakshak_alert_district", selectedDistrict);
       
       setState("subscribed");
       setError(null);
+      console.log("[AlertOptIn] Successfully subscribed!");
       
     } catch (e) {
       console.error("[AlertOptIn] Subscription failed:", e);
       setState("idle");
+      const errorMessage = e instanceof Error ? e.message : String(e);
       setError(
         lang === "gu"
-          ? "સબ્સ્ક્રિપ્શન નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો."
-          : "Subscription failed. Please try again."
+          ? `સબ્સ્ક્રિપ્શન નિષ્ફળ: ${errorMessage}`
+          : `Subscription failed: ${errorMessage}`
       );
     } finally {
       setLoading(false);
@@ -265,6 +286,22 @@ export default function AlertOptIn() {
                 : "No GPS. Your name, phone number, or location is not stored. Only your district."}
             </p>
           </div>
+
+          {/* Debug Info (only in development) */}
+          {process.env.NODE_ENV === "development" && (
+            <div className="mb-4 rounded-lg bg-blue-50 p-3 text-xs">
+              <p className="font-semibold text-blue-900">Debug Info:</p>
+              <p className="text-blue-700">
+                Service Worker: {typeof window !== "undefined" && "serviceWorker" in navigator ? "✅ Supported" : "❌ Not supported"}
+              </p>
+              <p className="text-blue-700">
+                Push Manager: {typeof window !== "undefined" && "PushManager" in window ? "✅ Supported" : "❌ Not supported"}
+              </p>
+              <p className="text-blue-700">
+                VAPID Key: {process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ? "✅ Configured" : "❌ Missing"}
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 rounded-lg bg-red-50 p-3">
