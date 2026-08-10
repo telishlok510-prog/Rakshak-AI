@@ -1,7 +1,9 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
 
 export const runtime = "nodejs";
+
+const redis = Redis.fromEnv();
 
 /**
  * POST /api/alerts/subscribe
@@ -28,7 +30,7 @@ export async function POST(request: Request) {
     const kvKey = `subs:${districtSlug}`;
 
     // Get existing subscriptions
-    const existing = (await kv.get<PushSubscriptionJSON[]>(kvKey)) || [];
+    const existing = (await redis.get<PushSubscriptionJSON[]>(kvKey)) || [];
 
     // Check if already exists by endpoint
     const endpoint = subscription.endpoint;
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
 
     if (!isDuplicate) {
       existing.push(subscription);
-      await kv.set(kvKey, existing, { ex: 90 * 24 * 60 * 60 }); // 90 days
+      await redis.set(kvKey, existing, { ex: 90 * 24 * 60 * 60 }); // 90 days
       console.log(`[Alerts] New subscription for ${districtSlug}. Total: ${existing.length}`);
     } else {
       console.log(`[Alerts] Duplicate subscription for ${districtSlug}, skipping.`);

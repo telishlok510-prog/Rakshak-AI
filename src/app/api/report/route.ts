@@ -1,10 +1,12 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import webpush from "web-push";
 import { analyzeReportForAlert } from "@/lib/ai";
 import { slugifyDistrict, isValidDistrict, type StoredReport } from "@/lib/alerts";
 import type { LanguageCode } from "@/lib/types";
 
 export const runtime = "nodejs";
+
+const redis = Redis.fromEnv();
 
 // Configure VAPID for web-push
 if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT) {
@@ -49,7 +51,7 @@ export async function POST(request: Request) {
 
     // Store report
     const reportsKey = `reports:${districtSlug}`;
-    const reports = (await kv.get<StoredReport[]>(reportsKey)) || [];
+    const reports = (await redis.get<StoredReport[]>(reportsKey)) || [];
     
     const newReport: StoredReport = {
       category: analysis.category,
@@ -59,7 +61,7 @@ export async function POST(request: Request) {
     };
 
     reports.unshift(newReport);
-    await kv.set(reportsKey, reports.slice(0, 50), { ex: 30 * 24 * 60 * 60 });
+    await redis.set(reportsKey, reports.slice(0, 50), { ex: 30 * 24 * 60 * 60 });
     console.log(`[Report] Stored. Total: ${reports.length}`);
 
     // Send notifications (fire and forget)
@@ -82,7 +84,7 @@ export async function POST(request: Request) {
 }
 
 async function sendNotifications(district: string, category: string, tip: string) {
-  const subscriptions = (await kv.get<PushSubscriptionJSON[]>(`subs:${district}`)) || [];
+  const subscriptions = (await redis.get<PushSubscriptionJSON[]>(`subs:${district}`)) || [];
   
   if (subscriptions.length === 0) return;
 
@@ -119,9 +121,9 @@ async function sendNotifications(district: string, category: string, tip: string
   if (deadEndpoints.length > 0) {
     const filtered = subscriptions.filter((s) => !deadEndpoints.includes(s.endpoint || ""));
     if (filtered.length > 0) {
-      await kv.set(`subs:${district}`, filtered, { ex: 90 * 24 * 60 * 60 });
+      await redis.set(`subs:${district}`, filtered, { ex: 90 * 24 * 60 * 60 });
     } else {
-      await kv.del(`subs:${district}`);
+      await redis.del(`subs:${district}`);
     }
     console.log(`[Report] Cleaned ${deadEndpoints.length} dead subs`);
   }

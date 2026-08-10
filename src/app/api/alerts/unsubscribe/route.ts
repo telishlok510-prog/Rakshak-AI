@@ -1,7 +1,9 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
 
 export const runtime = "nodejs";
+
+const redis = Redis.fromEnv();
 
 /**
  * POST /api/alerts/unsubscribe
@@ -28,7 +30,7 @@ export async function POST(request: Request) {
     const kvKey = `subs:${districtSlug}`;
 
     // Get existing subscriptions
-    const existing = (await kv.get<PushSubscriptionJSON[]>(kvKey)) || [];
+    const existing = (await redis.get<PushSubscriptionJSON[]>(kvKey)) || [];
 
     // Remove by endpoint
     const endpoint = subscription.endpoint;
@@ -36,9 +38,9 @@ export async function POST(request: Request) {
 
     // Save or delete
     if (filtered.length > 0) {
-      await kv.set(kvKey, filtered, { ex: 90 * 24 * 60 * 60 });
+      await redis.set(kvKey, filtered, { ex: 90 * 24 * 60 * 60 });
     } else {
-      await kv.del(kvKey);
+      await redis.del(kvKey);
     }
 
     console.log(`[Alerts] Unsubscribed from ${districtSlug}. Remaining: ${filtered.length}`);
