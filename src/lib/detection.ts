@@ -143,6 +143,18 @@ function scoreToRisk(score: number): RiskLevel {
 
 type IndicatorCopy = { label: string; detail: string };
 
+/**
+ * SAFETY FALLBACK: if an IndicatorCode somehow doesn't have a copy entry,
+ * we use GENERIC so the UI never crashes. This also satisfies TypeScript
+ * when new codes are added to the union before copy is fully updated.
+ */
+function getIndicatorCopy(
+  lang: LanguageCode,
+  code: IndicatorCode
+): IndicatorCopy {
+  return INDICATOR_COPY[lang][code] ?? INDICATOR_COPY[lang]["GENERIC"];
+}
+
 const INDICATOR_COPY: Record<
   LanguageCode,
   Record<IndicatorCode, IndicatorCopy>
@@ -187,6 +199,19 @@ const INDICATOR_COPY: Record<
     CALL_IMPERSONATION: {
       label: "Caller impersonates a bank / RBI official",
       detail: "Officials do not call asking for OTP or threatening to block your account.",
+    },
+    // ── NEW: Visual indicators (from multimodal AI analysis) ──
+    FAKE_LOGO: {
+      label: "Fake or altered logo detected",
+      detail: "The image shows a logo that looks like a real bank's but is slightly wrong, blurry, or misaligned. This is a common visual phishing trick.",
+    },
+    SUSPICIOUS_UI: {
+      label: "Suspicious screen design",
+      detail: "The layout, colors, or buttons look unusual for a real banking app. Scammers often copy the look but get small details wrong.",
+    },
+    VISUAL_MISMATCH: {
+      label: "Visual details don't match",
+      detail: "Something in the image looks inconsistent — wrong fonts, mismatched colors, or a fake URL bar. These are signs of a forged screen.",
     },
     GENERIC: {
       label: "General warning",
@@ -233,6 +258,19 @@ const INDICATOR_COPY: Record<
     CALL_IMPERSONATION: {
       label: "કૉલ કરનાર બેંક / RBI અધિકારી હોવાનો ડોળ કરે છે",
       detail: "અધિકારીઓ OTP માંગવા કે ખાતું બ્લોક કરવાની ધમકી આપવા ફોન કરતા નથી.",
+    },
+    // ── NEW: Visual indicators (from multimodal AI analysis) ──
+    FAKE_LOGO: {
+      label: "નકલી કે બદલાયેલ લોગો મળ્યું",
+      detail: "ઇમેજમાં એવું લોગો દેખાય છે જે સાચી બેંક જેવું લાગે પણ થોડું ખોટું, ધૂંધળું કે બરાબર ગોઠવાયેલું નથી. આ દ્રશ્ય ફિશિંગની સામાન્ય યુક્તિ છે.",
+    },
+    SUSPICIOUS_UI: {
+      label: "શંકાસ્પદ સ્ક્રીન ડિઝાઇન",
+      detail: "લેઆઉટ, રંગો કે બટનો સાચી બેંકિંગ એપ માટે અસામાન્ય લાગે છે. છેતરનારા દેખાવની નકલ કરે છે પણ નાની વિગતો ખોટી કરે છે.",
+    },
+    VISUAL_MISMATCH: {
+      label: "દ્રશ્ય વિગતો બંધબેસતી નથી",
+      detail: "ઇમેજમાં કંઈક અસંગત લાગે છે — ખોટા ફોન્ટ, બંધબેસતા નથી તે રંગો, કે નકલી URL બાર. આ બધા નકલી સ્ક્રીનના સંકેતો છે.",
     },
     GENERIC: { label: "સામાન્ય ચેતવણી", detail: "સાવધ રહો અને પગલું ભરતા પહેલા ખાતરી કરો." },
   },
@@ -315,12 +353,15 @@ export function heuristicAnalyze(
 
   const indicators: DetectedIndicator[] = signals
     .sort((a, b) => b.weight - a.weight)
-    .map((s) => ({
-      code: s.code,
-      label: INDICATOR_COPY[language][s.code].label,
-      detail: INDICATOR_COPY[language][s.code].detail,
-      matches: s.matches,
-    }));
+    .map((s) => {
+      const copy = getIndicatorCopy(language, s.code);
+      return {
+        code: s.code,
+        label: copy.label,
+        detail: copy.detail,
+        matches: s.matches,
+      };
+    });
 
   const highlights = Array.from(new Set(signals.flatMap((s) => s.matches)));
 
