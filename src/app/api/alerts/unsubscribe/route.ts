@@ -1,3 +1,4 @@
+import { getDb, COLLECTIONS } from "@/lib/db";
 import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
 
 export const runtime = "nodejs";
@@ -36,52 +37,39 @@ export async function POST(request: Request) {
     }
 
     const districtSlug = slugifyDistrict(district);
-    
-    // Check if KV is configured
-    const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
-    
-    if (!hasKV) {
-      // Development mode without KV
-      console.log("=================================");
-      console.log("[Alerts] DEV MODE - No KV configured");
-      console.log("[Alerts] Would unsubscribe from:", districtSlug);
-      console.log("=================================");
-      
-      return Response.json({
-        success: true,
-        district: districtSlug,
-        remainingSubscribers: 0,
-        devMode: true,
-        message: "Development mode: unsubscribe logged but not processed (KV not configured)"
-      });
-    }
-
-    // Production mode with KV
-    const { kv } = await import("@vercel/kv");
-    const kvKey = `subs:${districtSlug}`;
-
-    // Get existing subscriptions
-    const existing = (await kv.get<PushSubscriptionJSON[]>(kvKey)) || [];
-
-    // Remove this subscription by endpoint
     const endpoint = subscription.endpoint;
-    const filtered = existing.filter((sub) => sub.endpoint !== endpoint);
 
-    // Save updated list (or delete key if empty)
-    if (filtered.length > 0) {
-      await kv.set(kvKey, filtered, { ex: 90 * 24 * 60 * 60 });
-    } else {
-      await kv.del(kvKey);
+    if (!endpoint) {
+      return Response.json(
+        { error: "Invalid subscription: missing endpoint" },
+        { status: 400 }
+      );
     }
+
+    // Get MongoDB database
+    const db = await getDb();
+    const subscriptionsCollection = db.collection(COLLECTIONS.SUBSCRIPTIONS);
+
+    // Remove subscription by district and endpoint
+    const result = await subscriptionsCollection.deleteOne({
+      district: districtSlug,
+      endpoint,
+    });
+
+    // Count remaining subscriptions for this district
+    const remainingSubscribers = await subscriptionsCollection.countDocuments({
+      district: districtSlug,
+    });
 
     console.log(
-      `[Alerts] Unsubscribed from ${districtSlug}. Remaining: ${filtered.length}`
+      `[Alerts] Unsubscribed from ${districtSlug}. Remaining: ${remainingSubscribers}`
     );
 
     return Response.json({
       success: true,
       district: districtSlug,
-      remainingSubscribers: filtered.length,
+      remainingSubscribers,
+      deleted: result.deletedCount > 0,
     });
     
   } catch (error) {

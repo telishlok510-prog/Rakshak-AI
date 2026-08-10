@@ -1,12 +1,10 @@
 import webpush from "web-push";
 import { analyzeReportForAlert } from "@/lib/ai";
-import { slugifyDistrict, isValidDistrict, type StoredReport } from "@/lib/alerts";
-import type { LanguageCode } from "@/lib/types";
+import { slugifyDistrict, isValidDistrict } from "@/lib/alerts";
+import type { LanguageCode, ScamCategory } from "@/lib/types";
+import { getDb, COLLECTIONS, type ReportDocument, type SubscriptionDocument } from "@/lib/db";
 
 export const runtime = "nodejs";
-
-// Check if KV is configured
-const hasKV = () => Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
 // Configure VAPID details for web-push
 if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT) {
@@ -73,51 +71,26 @@ export async function POST(request: Request) {
     const analysis = await analyzeReportForAlert(reportText, language);
     console.log(`[Report] Analysis complete: ${analysis.category}`);
 
-    // Check if KV is configured
-    if (!hasKV()) {
-      console.log("=================================");
-      console.log("[Report] DEV MODE - No KV configured");
-      console.log("[Report] District:", districtSlug);
-      console.log("[Report] Category:", analysis.category);
-      console.log("[Report] Summary:", analysis.summary);
-      console.log("[Report] Prevention Tip:", analysis.preventionTip);
-      console.log("=================================");
-      
-      return Response.json({
-        success: true,
-        analysis: {
-          category: analysis.category,
-          summary: analysis.summary,
-          preventionTip: analysis.preventionTip,
-        },
-        district: districtSlug,
-        devMode: true,
-        message: "Development mode: report analyzed but not saved (KV not configured)"
-      });
-    }
+    // Step 2: Store report in MongoDB
+    const db = await getDb();
+    const reportsCollection = db.collection<ReportDocument>(COLLECTIONS.REPORTS);
 
-    // Production mode: store in KV
-    const { kv } = await import("@vercel/kv");
-
-    // Step 2: Store report in KV (last 50 reports per district)
-    const reportsKey = `reports:${districtSlug}`;
-    const existingReports = (await kv.get<StoredReport[]>(reportsKey)) || [];
-    
-    const newReport: StoredReport = {
+    const newReport: ReportDocument = {
+      district: districtSlug,
       category: analysis.category,
       summary: analysis.summary,
       preventionTip: analysis.preventionTip,
       timestamp: Date.now(),
+      createdAt: new Date(),
     };
 
-    // Add to front, cap at 50 reports
-    const updatedReports = [newReport, ...existingReports].slice(0, 50);
-    await kv.set(reportsKey, updatedReports, { ex: 30 * 24 * 60 * 60 }); // 30 day expiry
-
-    console.log(`[Report] Stored report. Total for ${districtSlug}: ${updatedReports.length}`);
+    await reportsCollection.insertOne(newReport);
+    
+    // Count total reports for this district
+    const totalReports = await reportsCollection.countDocuments({ district: districtSlug });
+    console.log(`[Report] Stored report. Total for ${districtSlug}: ${totalReports}`);
 
     // Step 3: Send push notifications to subscribers (fire and forget, don't block response)
-    // We return the analysis immediately and send notifications in background
     sendNotificationsToDistrict(districtSlug, analysis.category, analysis.preventionTip)
       .catch((e) => console.error("[Report] Notification fan-out failed:", e));
 
@@ -150,14 +123,13 @@ async function sendNotificationsToDistrict(
   category: string,
   preventionTip: string
 ): Promise<void> {
-  if (!hasKV()) {
-    console.log(`[Report] DEV MODE - Would send notifications to ${districtSlug} subscribers`);
-    return;
-  }
+  const db = await getDb();
+  const subscriptionsCollection = db.collection<SubscriptionDocument>(COLLECTIONS.SUBSCRIPTIONS);
 
-  const { kv } = await import("@vercel/kv");
-  const subsKey = `subs:${districtSlug}`;
-  const subscriptions = (await kv.get<PushSubscriptionJSON[]>(subsKey)) || [];
+  // Get all subscriptions for this district
+  const subscriptions = await subscriptionsCollection
+    .find({ district: districtSlug })
+    .toArray();
 
   if (subscriptions.length === 0) {
     console.log(`[Report] No subscribers for ${districtSlug}, skipping notifications.`);
@@ -183,12 +155,12 @@ async function sendNotificationsToDistrict(
 
   // Send to all subscriptions, track failures
   const results = await Promise.allSettled(
-    subscriptions.map((sub) =>
-      webpush.sendNotification(sub as any, payload).catch((e) => {
+    subscriptions.map((doc) =>
+      webpush.sendNotification(doc.subscription as any, payload).catch((e) => {
         // Rethrow with subscription endpoint for cleanup
-        const error = new Error(`Failed to send to ${sub.endpoint || 'unknown'}`);
+        const error = new Error(`Failed to send to ${doc.endpoint}`);
         (error as any).status = (e as any).statusCode || (e as any).status;
-        (error as any).endpoint = sub.endpoint;
+        (error as any).endpoint = doc.endpoint;
         throw error;
       })
     )
@@ -200,7 +172,7 @@ async function sendNotificationsToDistrict(
     if (result.status === "rejected") {
       const error = result.reason as any;
       const status = error?.status;
-      const endpoint = error?.endpoint || subscriptions[index].endpoint || '';
+      const endpoint = error?.endpoint || subscriptions[index].endpoint;
       
       console.warn(`[Report] Notification failed for ${endpoint}: ${error?.message}`);
       
@@ -210,15 +182,12 @@ async function sendNotificationsToDistrict(
     }
   });
 
-  // Remove dead subscriptions from KV
+  // Remove dead subscriptions from MongoDB
   if (deadEndpoints.length > 0) {
-    const filtered = subscriptions.filter((sub) => !deadEndpoints.includes(sub.endpoint || ''));
-    
-    if (filtered.length > 0) {
-      await kv.set(subsKey, filtered, { ex: 90 * 24 * 60 * 60 });
-    } else {
-      await kv.del(subsKey);
-    }
+    await subscriptionsCollection.deleteMany({
+      district: districtSlug,
+      endpoint: { $in: deadEndpoints },
+    });
     
     console.log(`[Report] Cleaned up ${deadEndpoints.length} dead subscriptions from ${districtSlug}`);
   }
