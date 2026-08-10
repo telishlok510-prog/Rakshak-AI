@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { GUJARAT_DISTRICTS, slugifyDistrict, isValidDistrict } from "@/lib/alerts";
+import { getVapidPublicKey, isVapidConfigured, VAPID_PUBLIC_KEY } from "@/lib/vapid";
 
 /**
  * Alert Opt-In Component
@@ -100,8 +101,12 @@ export default function AlertOptIn() {
       console.log("[AlertOptIn] Service worker ready");
       
       // Subscribe to push notifications
-      const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      console.log("[AlertOptIn] VAPID public key available:", !!publicKey);
+      console.log("[AlertOptIn] VAPID check - isConfigured:", isVapidConfigured());
+      console.log("[AlertOptIn] VAPID check - key length:", VAPID_PUBLIC_KEY.length);
+      console.log("[AlertOptIn] VAPID check - key preview:", VAPID_PUBLIC_KEY.substring(0, 20));
+      
+      const publicKey = getVapidPublicKey(); // Will throw if not configured
+      console.log("[AlertOptIn] VAPID public key retrieved successfully");
       
       if (!publicKey) {
         throw new Error("VAPID public key not configured. Check NEXT_PUBLIC_VAPID_PUBLIC_KEY environment variable.");
@@ -298,7 +303,7 @@ export default function AlertOptIn() {
                 Push Manager: {typeof window !== "undefined" && "PushManager" in window ? "✅ Supported" : "❌ Not supported"}
               </p>
               <p className="text-blue-700">
-                VAPID Key: {process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ? "✅ Configured" : "❌ Missing"}
+                VAPID Key: {isVapidConfigured() ? `✅ Configured (${VAPID_PUBLIC_KEY.substring(0, 20)}...)` : "❌ Missing"}
               </p>
             </div>
           )}
