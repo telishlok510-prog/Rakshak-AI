@@ -9,12 +9,14 @@ export const runtime = "nodejs";
 const hasKV = () => Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
 // Configure VAPID details for web-push
-if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT) {
+if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT) {
   webpush.setVapidDetails(
     process.env.VAPID_SUBJECT,
-    process.env.VAPID_PUBLIC_KEY,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
   );
+} else {
+  console.warn("[Report] VAPID keys not configured - push notifications will fail");
 }
 
 /**
@@ -163,6 +165,15 @@ async function sendNotificationsToDistrict(
   }
 
   console.log(`[Report] Sending notifications to ${subscriptions.length} subscribers in ${districtSlug}...`);
+  
+  // Check VAPID configuration
+  if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+    console.error("[Report] VAPID keys not configured! Cannot send notifications.");
+    console.error("[Report] NEXT_PUBLIC_VAPID_PUBLIC_KEY:", !!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+    console.error("[Report] VAPID_PRIVATE_KEY:", !!process.env.VAPID_PRIVATE_KEY);
+    console.error("[Report] VAPID_SUBJECT:", !!process.env.VAPID_SUBJECT);
+    return;
+  }
 
   const payload = JSON.stringify({
     title: `⚠️ ${category} reported near you`,
