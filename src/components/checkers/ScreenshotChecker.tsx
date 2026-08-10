@@ -54,7 +54,15 @@ export default function ScreenshotChecker({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleFile = async (selectedFile: File) => {
+  const handleFile = async (selectedFile: File, forceAI?: boolean) => {
+    // forceAI lets a caller (like the shared-photo auto-analyze effect
+    // below) explicitly choose AI mode for THIS call, without depending on
+    // the `useAI` state value — which can still be stale/false at this
+    // point due to how React batches state updates, even right after
+    // calling setUseAI(true). Falls back to the current toggle state for
+    // normal manual uploads.
+    const aiModeForThisRun = forceAI ?? useAI;
+
     setError(null);
     setResult(null);
     setExtracted("");
@@ -83,7 +91,7 @@ export default function ScreenshotChecker({
         return;
       }
 
-      if (useAI) {
+      if (aiModeForThisRun) {
         await runImageAnalysis(selectedFile, textOut);
       } else {
         await runTextAnalysis(textOut);
@@ -94,6 +102,16 @@ export default function ScreenshotChecker({
     }
   };
 
+  // useAI's initial value above can miss initialFile if it arrives AFTER
+  // first mount (the parent converts it from sessionStorage asynchronously).
+  // Switch to AI mode when it shows up, same fix as the auto-analyze effect
+  // below and as CallChecker's mode switch.
+  useEffect(() => {
+    if (initialFile) {
+      setUseAI(true);
+    }
+  }, [initialFile]);
+
   // If a file was shared in from another app (Android share sheet ->
   // Gallery), analyze it automatically once it arrives. initialFile often
   // arrives AFTER first mount (the parent converts it from sessionStorage
@@ -103,7 +121,9 @@ export default function ScreenshotChecker({
   useEffect(() => {
     if (initialFile && handledInitialFileRef.current !== initialFile) {
       handledInitialFileRef.current = initialFile;
-      handleFile(initialFile);
+      // forceAI: true — shared photos always get Advanced AI analysis,
+      // regardless of the useAI toggle's current (possibly stale) state.
+      handleFile(initialFile, true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFile]);
