@@ -11,6 +11,7 @@ interface Message {
   text: string;
   time: string;
   result?: AnalysisResult;
+  aiPowered?: boolean; // Track if response came from AI
 }
 
 type Mode = "idle" | "sms" | "url";
@@ -150,16 +151,81 @@ export default function ChatAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
   const [mode, setMode] = useState<Mode>("idle");
+  const [listening, setListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(true);
   const endRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   const quickActions = lang === "gu" ? QUICK_ACTIONS_GU : QUICK_ACTIONS_EN;
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceSupported(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      setListening(false);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
+
+  // Update language when lang changes
+  useEffect(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = lang === "gu" ? "gu-IN" : "en-IN";
+    }
+  }, [lang]);
+
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) return;
+
+    if (listening) {
+      recognitionRef.current.stop();
+      setListening(false);
+    } else {
+      try {
+        recognitionRef.current.start();
+        setListening(true);
+      } catch (error) {
+        console.error("Failed to start recognition:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
-  const pushAssistant = (text: string, result?: AnalysisResult) =>
-    setMessages((m) => [...m, { role: "assistant", text, time: now(), result }]);
+  const pushAssistant = (text: string, result?: AnalysisResult, aiPowered?: boolean) =>
+    setMessages((m) => [...m, { role: "assistant", text, time: now(), result, aiPowered }]);
 
   const startMode = (m: "sms" | "url") => {
     setMode(m);
@@ -171,6 +237,7 @@ export default function ChatAssistant() {
     setMessages((m) => [...m, { role: "user", text: text.trim(), time: now() }]);
     setInput("");
 
+    // Special mode: SMS or URL analysis (uses existing /api/analyze)
     if (mode === "sms" || mode === "url") {
       const kind = mode;
       setMode("idle");
@@ -191,11 +258,44 @@ export default function ChatAssistant() {
       return;
     }
 
+    // Regular chat: try AI first, fall back to local knowledge base
     setTyping(true);
-    setTimeout(() => {
-      pushAssistant(getLocalResponse(text, lang));
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          language: lang,
+          conversationHistory: messages.slice(-6), // Send last 6 messages for context
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.response) {
+        // AI response successful
+        pushAssistant(data.response, undefined, true);
+      } else if (data.fallback) {
+        // AI unavailable, use local knowledge base
+        pushAssistant(getLocalResponse(text, lang), undefined, false);
+      } else {
+        // Error occurred
+        pushAssistant(
+          lang === "gu"
+            ? "માફ કરશો, હું અત્યારે જવાબ આપી શકતો નથી. કૃપા કરીને ફરીથી પ્રયાસ કરો."
+            : "Sorry, I couldn't respond right now. Please try again.",
+          undefined,
+          false
+        );
+      }
+    } catch (error) {
+      // Network error or API down, fall back to local knowledge base
+      console.error("Chat API error:", error);
+      pushAssistant(getLocalResponse(text, lang), undefined, false);
+    } finally {
       setTyping(false);
-    }, 500);
+    }
   };
 
   return (
@@ -254,7 +354,14 @@ export default function ChatAssistant() {
                   {m.result ? (
                     <ResultCard result={m.result} lang={lang} />
                   ) : (
-                    <p className="whitespace-pre-wrap">{m.text}</p>
+                    <>
+                      <p className="whitespace-pre-wrap">{m.text}</p>
+                      {m.role === "assistant" && m.aiPowered && (
+                        <div className="mt-1 flex items-center gap-1">
+                          <span className="text-[9px] text-gray-400">✨ AI-Powered</span>
+                        </div>
+                      )}
+                    </>
                   )}
                   <p className={`mt-1 text-right text-[10px] ${m.role === "user" ? "text-white/60" : "text-gray-400"}`}>
                     {m.time}
@@ -295,9 +402,31 @@ export default function ChatAssistant() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={lang === "gu" ? "અહીં ટાઇપ કરો..." : "Type here..."}
+              placeholder={
+                listening
+                  ? (lang === "gu" ? "🎤 સાંભળી રહ્યા છીએ..." : "🎤 Listening...")
+                  : (lang === "gu" ? "અહીં ટાઇપ કરો..." : "Type here...")
+              }
               className="flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-primary focus:outline-none"
             />
+            {voiceSupported && (
+              <button
+                type="button"
+                onClick={toggleVoiceInput}
+                className={`rounded-xl px-3 py-2 text-lg transition ${
+                  listening
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                title={
+                  listening
+                    ? (lang === "gu" ? "સાંભળી રહ્યા છીએ..." : "Listening...")
+                    : (lang === "gu" ? "બોલો" : "Speak")
+                }
+              >
+                🎤
+              </button>
+            )}
             <button
               type="submit"
               disabled={!input.trim()}

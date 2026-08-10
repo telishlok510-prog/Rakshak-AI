@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { GUJARAT_DISTRICTS } from "@/lib/alerts";
 
@@ -10,12 +10,47 @@ import { GUJARAT_DISTRICTS } from "@/lib/alerts";
  */
 export default function MarketAlertsAdmin() {
   const { t, lang } = useI18n();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  
   const [scamDescription, setScamDescription] = useState("");
   const [source, setSource] = useState("News");
   const [targetAudience, setTargetAudience] = useState<"all" | "specific">("all");
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+
+  // Check if already authenticated
+  useEffect(() => {
+    const auth = sessionStorage.getItem("admin_authenticated");
+    if (auth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError("");
+
+    try {
+      const response = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        sessionStorage.setItem("admin_authenticated", "true");
+        setIsAuthenticated(true);
+        setPassword("");
+      } else {
+        setAuthError("Incorrect password");
+      }
+    } catch (error) {
+      setAuthError("Authentication failed");
+    }
+  };
 
   const handleSubmit = async () => {
     if (!scamDescription || scamDescription.length < 20) {
@@ -64,15 +99,74 @@ export default function MarketAlertsAdmin() {
     );
   };
 
+  // Login screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 px-4">
+        <div className="w-full max-w-md">
+          <div className="card">
+            <div className="text-center mb-6">
+              <div className="text-5xl mb-3">🔐</div>
+              <h1 className="text-2xl font-bold text-primary mb-2">Admin Access</h1>
+              <p className="text-sm text-gray-600">Market Scam Alert Broadcaster</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Admin Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="field"
+                  placeholder="Enter admin password"
+                  autoFocus
+                />
+              </div>
+
+              {authError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                  {authError}
+                </div>
+              )}
+
+              <button type="submit" className="btn-primary w-full">
+                Login
+              </button>
+
+              <div className="text-xs text-gray-500 text-center">
+                Contact system admin for password
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Admin dashboard (original content)
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-primary mb-2">
-          🚨 Market Scam Alert Broadcaster
-        </h1>
-        <p className="text-gray-600">
-          Broadcast alerts about NEW scams discovered from external sources (news, social media, etc.)
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-primary mb-2">
+            🚨 Market Scam Alert Broadcaster
+          </h1>
+          <p className="text-gray-600">
+            Broadcast alerts about NEW scams discovered from external sources (news, social media, etc.)
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            sessionStorage.removeItem("admin_authenticated");
+            setIsAuthenticated(false);
+          }}
+          className="text-sm text-gray-600 hover:text-gray-900 underline"
+        >
+          Logout
+        </button>
       </div>
 
       <div className="card space-y-6">

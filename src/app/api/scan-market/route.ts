@@ -6,7 +6,7 @@
 
 import { Redis } from "@upstash/redis";
 import webpush from "web-push";
-import { analyzeWithAI } from "@/lib/ai";
+import { GoogleGenAI } from "@google/genai";
 import type { ScamCategory } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -69,16 +69,26 @@ Respond with ONLY JSON: {"category": "...", "preventionTip": "..."}`;
     let category: ScamCategory = "Other";
     let preventionTip = "Be cautious and verify before taking action.";
 
+    // Try AI analysis with Gemini
     try {
-      const aiResult = await analyzeWithAI(
-        systemPrompt,
-        userPrompt,
-        language === "gu" ? "gu" : "en"
-      );
+      const apiKey = process.env.GEMINI_API_KEY_1 || process.env.GEMINI_API_KEY;
+      if (apiKey) {
+        const genai = new GoogleGenAI({ apiKey });
+        const response = await genai.models.generateContent({
+          model: "gemini-2.0-flash-exp",
+          contents: userPrompt,
+          config: {
+            systemInstruction: systemPrompt,
+            maxOutputTokens: 512,
+          },
+        });
 
-      const parsed = JSON.parse(aiResult.analysis);
-      category = parsed.category || "Other";
-      preventionTip = parsed.preventionTip || preventionTip;
+        if (response && response.text) {
+          const parsed = JSON.parse(response.text);
+          category = parsed.category || "Other";
+          preventionTip = parsed.preventionTip || preventionTip;
+        }
+      }
     } catch (e) {
       console.error("[Market Scan] AI analysis failed, using defaults:", e);
     }
