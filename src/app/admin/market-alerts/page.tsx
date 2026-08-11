@@ -20,14 +20,58 @@ export default function MarketAlertsAdmin() {
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [dbCount, setDbCount] = useState<any>(null);
+  const [clearingDb, setClearingDb] = useState(false);
 
   // Check if already authenticated
   useEffect(() => {
     const auth = sessionStorage.getItem("admin_authenticated");
-    if (auth === "true") {
+    const storedPassword = sessionStorage.getItem("admin_password");
+    if (auth === "true" && storedPassword) {
       setIsAuthenticated(true);
+      setPassword(storedPassword);
+      loadDbCount();
     }
   }, []);
+
+  const loadDbCount = async () => {
+    try {
+      const response = await fetch("/api/admin/clear-database");
+      const data = await response.json();
+      setDbCount(data.count);
+    } catch (error) {
+      console.error("Failed to load DB count:", error);
+    }
+  };
+
+  const handleClearDatabase = async () => {
+    if (!confirm("⚠️ WARNING: This will delete ALL data from the database!\n\n- All district reports\n- All market alerts\n- All push notification subscriptions\n\nThis action cannot be undone. Are you sure?")) {
+      return;
+    }
+
+    setClearingDb(true);
+    try {
+      const response = await fetch("/api/admin/clear-database", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`✅ Database cleared successfully!\n\nDeleted:\n- ${data.deleted.reports} district reports\n- ${data.deleted.alerts} market alerts\n- ${data.deleted.subscriptions} subscriptions\n\nTotal: ${data.deleted.total} items`);
+        setDbCount(null);
+        loadDbCount();
+      } else {
+        alert("❌ Failed to clear database: " + (data.error || "Unknown error"));
+      }
+    } catch (error) {
+      alert("❌ Error clearing database");
+    } finally {
+      setClearingDb(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +86,9 @@ export default function MarketAlertsAdmin() {
 
       if (response.ok) {
         sessionStorage.setItem("admin_authenticated", "true");
+        sessionStorage.setItem("admin_password", password);
         setIsAuthenticated(true);
-        setPassword("");
+        // Don't clear password - we need it for clear database
       } else {
         setAuthError("Incorrect password");
       }
@@ -158,15 +203,49 @@ export default function MarketAlertsAdmin() {
             Broadcast alerts about NEW scams discovered from external sources (news, social media, etc.)
           </p>
         </div>
-        <button
-          onClick={() => {
-            sessionStorage.removeItem("admin_authenticated");
-            setIsAuthenticated(false);
-          }}
-          className="text-sm text-gray-600 hover:text-gray-900 underline"
-        >
-          Logout
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              sessionStorage.removeItem("admin_authenticated");
+              sessionStorage.removeItem("admin_password");
+              setIsAuthenticated(false);
+              setPassword("");
+            }}
+            className="text-sm text-gray-600 hover:text-gray-900 underline"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      {/* Database Stats & Clear Button */}
+      <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-red-900 mb-1">🗑️ Database Management</h3>
+            {dbCount && (
+              <p className="text-sm text-red-800">
+                Current data: <strong>{dbCount.reports || 0}</strong> district reports, 
+                <strong> {dbCount.alerts || 0}</strong> market alerts, 
+                <strong> {dbCount.subscriptions || 0}</strong> subscriptions 
+                (<strong>{dbCount.total || 0}</strong> total items)
+              </p>
+            )}
+            {!dbCount && (
+              <p className="text-sm text-red-800">Loading database stats...</p>
+            )}
+          </div>
+          <button
+            onClick={handleClearDatabase}
+            disabled={clearingDb}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg disabled:opacity-50 transition"
+          >
+            {clearingDb ? "Clearing..." : "Clear All Data"}
+          </button>
+        </div>
+        <p className="text-xs text-red-700 mt-2">
+          ⚠️ Warning: This will permanently delete all reports, alerts, and subscriptions from the database
+        </p>
       </div>
 
       <div className="card space-y-6">

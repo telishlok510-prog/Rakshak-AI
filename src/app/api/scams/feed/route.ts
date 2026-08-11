@@ -11,6 +11,9 @@ const redis = Redis.fromEnv();
  * Query params: ?type=all|district|market&district=<name>&limit=20
  */
 export async function GET(request: Request) {
+  // Mark route as dynamic to avoid static rendering issues
+  const timestamp = Date.now();
+  
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type") || "all";

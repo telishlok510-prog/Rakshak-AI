@@ -75,7 +75,7 @@ Respond with ONLY JSON: {"category": "...", "preventionTip": "..."}`;
       if (apiKey) {
         const genai = new GoogleGenAI({ apiKey });
         const response = await genai.models.generateContent({
-          model: "gemini-2.0-flash-exp",
+          model: "gemini-1.5-flash",
           contents: userPrompt,
           config: {
             systemInstruction: systemPrompt,

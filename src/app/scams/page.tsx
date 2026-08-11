@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import type { ScamCategory } from "@/lib/types";
 
 interface DistrictReport {
@@ -114,9 +112,7 @@ export default function ScamFeedPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mx-auto max-w-4xl px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-primary">
@@ -292,9 +288,7 @@ export default function ScamFeedPage() {
             </button>
           </div>
         )}
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 }

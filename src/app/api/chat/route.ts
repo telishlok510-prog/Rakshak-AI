@@ -172,7 +172,7 @@ export async function POST(request: Request) {
     const fullPrompt = `${historyContext}\n\nUser: ${message.trim()}`;
 
     const response = await genai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-1.5-flash",
       contents: fullPrompt,
       config: {
         systemInstruction: buildChatSystemPrompt(lang),
@@ -189,7 +189,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       response: responseText,
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-1.5-flash",
     });
   } catch (err: any) {
     console.error("[ChatAssistant] AI error:", err);

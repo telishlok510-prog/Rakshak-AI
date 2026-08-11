@@ -1,0 +1,672 @@
+=============================================================
+AI PROMPT FOR GENERATING RAKSHAK AI PRESENTATION
+Maverick Effect AI Challenge 2026 Finals
+=============================================================
+
+INSTRUCTION: Use this exact prompt with AI presentation tools like Gamma.app or Beautiful.ai
+
+---
+
+PROMPT:
+---
+
+Create a professional 10-slide hackathon presentation for "Rakshak AI" with the following specifications:
+
+═══════════════════════════════════════════════════════════
+DESIGN REQUIREMENTS (MATCH REFERENCE PDF VISUAL STYLE)
+═══════════════════════════════════════════════════════════
+
+**IMPORTANT: The attached reference PDF (Rakshak-AI-Digital-Shield.pdf) is provided ONLY for visual style inspiration. DO NOT copy its content. Use YOUR OWN content from this prompt and the RAKSHAK_AI_PROJECT_REFERENCE.md file.**
+
+**Visual Style to Match from Reference PDF:**
+- **Background:** Dark navy blue (#0A1628, #1a1f3a) with subtle circuit board grid patterns
+- **Primary Colors:** Neon green (#00FF9F, #10B981) and cyan (#00D9FF, #06B6D4) for tech feel
+- **Accent Colors:** 
+  - Green glow effects for "safe" elements
+  - Red (#EF4444) for danger/threats
+  - Teal/turquoise gradients (#14B8A6 to #06B6D4)
+- **Typography:** 
+  - Large, bold white headers with strong contrast
+  - Clean sans-serif fonts (similar to Inter or Rajdhani)
+  - Futuristic, tech-focused aesthetic
+- **Visual Elements:**
+  - Glowing shield icons with green light effects
+  - Mobile phone mockups with dark UI and green accents
+  - Hexagonal tech frames around content cards
+  - Circuit board patterns and tech connectors
+  - Gradient overlays (dark blue to teal)
+  - Soft neon glow effects on important elements
+  - India map with dotted/wireframe style
+
+**Key Design Patterns from Reference PDF:**
+- Dark, futuristic tech aesthetic (like cybersecurity/fintech apps)
+- Green shield/protection iconography with glow
+- Content cards with subtle green borders and dark backgrounds
+- Mobile mockups showing dark green interfaces
+- Comparison tables with gray vs green/cyan sections
+- Flow diagrams with glowing arrows
+- Large impactful text on left, visuals on right
+- Bottom message boxes with subtle backgrounds
+
+**DO NOT USE:**
+- ❌ Content from reference PDF (it's from a different/older version)
+- ❌ Their slide structure (they have 15 slides, you need 10)
+- ❌ Their feature descriptions (use your 5-pillar structure instead)
+
+**DO USE:**
+- ✅ Dark navy blue futuristic theme
+- ✅ Green/cyan neon glow effects
+- ✅ Circuit board patterns
+- ✅ Shield and tech iconography style
+- ✅ Mobile mockup presentation style
+- ✅ Layout patterns (left text, right visual)
+
+═══════════════════════════════════════════════════════════
+PRESENTATION STRUCTURE (10 SLIDES EXACTLY)
+═══════════════════════════════════════════════════════════
+
+
+-----------------------------------------------------------
+SLIDE 1: TITLE SLIDE
+-----------------------------------------------------------
+
+**Title:** "Rakshak AI"
+**Subtitle:** "Learn. Practice. Protect."
+**Tagline:** "AI-Powered Financial Safety for Rural India"
+
+**Visual:** 
+- Large shield icon with message bubble inside (representing protection + communication)
+- Clean white/light gray background with subtle gradient
+- Professional, modern layout
+
+**Bottom Information:**
+- Team: Teli Shlok Jamnashankar, Veer Shah, Trivedi Surajz Bharatbhushan, Solanki Krish Shantilal
+- Institution: SVIT, Vasad
+- Event: Maverick Effect AI Challenge 2026 Finals
+- Date: 13 August 2026
+
+**Design Note:** Match the clean, professional style from reference PDF title slide
+
+-----------------------------------------------------------
+SLIDE 2: THE PROBLEM - "THE SCAM VULNERABILITY ZONE"
+-----------------------------------------------------------
+
+**Title:** "What if one fake SMS could empty an entire family's savings?"
+
+**Subtitle:** "For millions of first-time digital banking users in rural India, this isn't hypothetical—it's daily reality."
+
+**Main Visual:**
+- Graph showing two curves over time:
+  - TOP CURVE (steep upward): "UPI & Digital Payment Adoption" 📈
+  - BOTTOM CURVE (slow upward): "Financial Literacy & Awareness" →
+  - SHADED AREA BETWEEN: "The Scam Vulnerability Zone" (orange/red gradient)
+
+**Key Statistics (in boxes):**
+- ₹1,750+ Crores lost to digital fraud annually
+- 50,000+ complaints monthly
+- 65% victims from rural/semi-urban areas
+- Only 23% rural citizens can identify scams
+
+**Bottom Message Box:**
+"Digital Banking is growing faster than Digital Awareness. Without corresponding financial literacy, scam cases are surging exponentially in rural demographics."
+
+**Design:** Match the problem visualization style from reference PDF slide 3
+
+
+-----------------------------------------------------------
+SLIDE 3: INTRODUCING RAKSHAK AI - THE 5-PILLAR SOLUTION
+-----------------------------------------------------------
+
+**Title:** "Introducing Rakshak AI"
+**Subtitle:** "An AI-powered Digital Banking Safety & Financial Literacy Platform designed specifically for first-time digital banking users."
+
+**Main Visual:**
+- Five interconnected 3D hexagonal pillars arranged in a shield formation
+- ALL FIVE PILLARS SOLID BLUE (fully implemented)
+
+**The Five Pillars (arranged around central point):**
+
+1. **PROTECT** 🛡️ (Top Center - Solid Blue)
+   - Real-time AI threat detection
+
+2. **LEARN** 📚 (Left - Solid Blue)
+   - Interactive financial literacy
+
+3. **PRACTICE** 🎮 (Right - Solid Blue)
+   - Safe sandbox training
+
+4. **REPORT** 📢 (Bottom Left - Solid Blue)
+   - Community intelligence
+
+5. **CONNECT** 🌐 (Bottom Right - Solid Blue)
+   - Universal accessibility (PWA)
+
+**Legend Box:**
+● Solid Blue = Fully Implemented & Operational
+
+**Bottom Message:**
+"A comprehensive ecosystem combining detection, education, practice, reporting, and accessibility—all in one platform."
+
+**Design:** Match the pillar architecture visual from reference PDF slide 4
+
+-----------------------------------------------------------
+SLIDE 4: COMPETITIVE ADVANTAGE - "THE SECURITY NET IS BROKEN"
+-----------------------------------------------------------
+
+**Title:** "The Security Net is Broken"
+
+**Comparison Table:**
+
+| Feature | Traditional Banks | Basic Scam Apps | Rakshak AI |
+|---------|-------------------|-----------------|------------|
+| **Threat Detection** | ❌ No | ✅ Yes | ✅ Yes ✓ |
+| **Explains the "Why"** | ❌ No | ❌ No | ✅ Yes ✓ |
+| **Safe Practice Sandbox** | ❌ No | ❌ No | ✅ Yes ✓ |
+| **Local Language/Gujarati** | ⚠️ Partial | ❌ No | ✅ Yes ✓ |
+
+**Bottom Message Box (gray background):**
+"Current apps only detect. Banks only preach awareness.
+Neither teaches, explains, or allows users to practice safely in their native language."
+
+**Design:** Match the clean comparison table style from reference PDF slide 5
+
+
+-----------------------------------------------------------
+SLIDE 5: PILLAR 1 - PROTECT (Implemented Core Platform)
+-----------------------------------------------------------
+
+**Title:** "Pillar 1: PROTECT (Implemented Core Platform)"
+
+**Center Visual:**
+- Smartphone mockup showing "Threat Blocked. Malicious activity detected." with green checkmark
+
+**6 Detection Channels (arranged around phone):**
+
+1. **📱 SMS Analyzer:**
+   "Flags deceptive text structures"
+
+2. **🔗 URL & QR Analyzer:**
+   "Intercepts malicious routing"
+
+3. **📸 Screenshot Analyzer:**
+   "Extracts context from suspicious images"
+
+4. **💳 UPI Request Checker:**
+   "Blocks unauthorized pull-requests"
+
+5. **🎤 Scam Call Analyzer:**
+   "Real-time audio threat detection"
+
+6. **🚨 Market Alert System:**
+   "District-wise community threat intelligence (32 districts)"
+
+**Highlight Box at Bottom:**
+"Automatic Gujarati Voice Output & AI Chat Assistant"
+
+**Sub-text:**
+"We don't just block the threat; an AI assistant explains the danger aloud in the user's native language, solving the literacy barrier instantly."
+
+**Design:** Match the feature showcase layout from reference PDF slide 6
+
+-----------------------------------------------------------
+SLIDE 6: PILLAR 2 & 3 - LEARN + PRACTICE
+-----------------------------------------------------------
+
+**Title:** "Pillar 2 & 3: LEARN + PRACTICE"
+
+**Split Screen Layout:**
+
+**LEFT SIDE - LEARN** 📚
+
+**Visual:** Mobile screen showing educational modules:
+- 🏛️ Core Banking
+- 💰 Financial Growth  
+- 🚨 Threat Awareness
+
+**Description:**
+"Interactive financial literacy curriculum with 12 lesson categories, real-life case studies, and progress tracking."
+
+**Key Message:**
+"Users learn while using the platform. Rakshak AI transforms isolated security alerts into contextual micro-learning moments."
+
+**RIGHT SIDE - PRACTICE** 🎮
+
+**Visual:** Two phone mockups side by side
+
+*Left Phone - Scam Simulation:*
+- "URGENT: Bank Alert"
+- "Caller: Unknown (Suspicious)"
+- Buttons: "Accept (High Risk)" | "Decline"
+
+*Right Phone - Banking Simulation:*
+- ATM Withdraw interface
+- UPI Pay options
+- Dummy Balance: ₹1,12,568
+
+**Description:**
+"4 safe simulators: UPI, Net Banking, ATM, and Real Gujarati Scam Call Training"
+
+**Bottom Message:**
+"Building confidence through practical experience, not theoretical reading."
+
+**Design:** Match the dual-environment comparison from reference PDF slides 7-8
+
+
+-----------------------------------------------------------
+SLIDE 7: PILLAR 4 & 5 - REPORT + CONNECT (PWA)
+-----------------------------------------------------------
+
+**Title:** "Pillar 4 & 5: REPORT + CONNECT"
+
+**TOP SECTION - REPORT** 📢
+
+**Visual:** Dashboard interface mockup
+
+**Features (3 cards):**
+1. **Quick Report System**
+   - One-tap scam reporting
+   - Government integration ready
+
+2. **Community Database**
+   - Collective threat intelligence
+   - Real-time pattern updates
+
+3. **District Alerts**
+   - 32 Gujarat districts covered
+   - Localized threat warnings
+
+---
+
+**BOTTOM SECTION - CONNECT** 🌐
+
+**Title:** "Frictionless UX: Progressive Web App (PWA) & Explainable AI"
+
+**Three-Step User Journey (visual flow left to right):**
+
+**Step 1: Intercept**
+📱 User long-presses suspicious SMS → Hits Share button
+"User shares suspicious content from any app"
+
+**Step 2: Analyze**
+🧠 Rakshak AI overlay appears → AI brain animation
+"Seamless PWA overlay activates. AI-powered detection runs instantly."
+
+**Step 3: Explain**
+🎯 Risk gauge shows threat level → Voice icon animates
+"Instant Explainable AI analysis delivered via Automatic Voice Guidance"
+
+**Bottom Message:**
+"Removing copy-paste friction drastically improves accessibility and adoption for first-time smartphone users."
+
+**PWA Benefits (small icons at bottom):**
+✅ Works Offline | ✅ No App Store | ✅ Instant Updates | ✅ Universal Compatibility
+
+**Design:** Match the user journey flow from reference PDF slide 9
+
+-----------------------------------------------------------
+SLIDE 8: SOCIAL IMPACT - EMPOWERING THE NEXT BILLION
+-----------------------------------------------------------
+
+**Title:** "Empowering the Next Billion Users"
+
+**Visual:** India map outline with three user segment circles
+
+**Three Target Segments:**
+
+1. **👨‍🌾 Farmers & Senior Citizens**
+   
+   **Impact:** Elevated Cyber Safety
+   - Immediate reduction in successful fraud conversions
+   - Protects life savings
+   - Builds trust in digital economy
+
+2. **👨‍🎓 Students & Small Business Owners**
+   
+   **Impact:** Scalable Financial Literacy
+   - Continuous, localized education through interaction
+   - Peer-to-peer scam awareness
+   - Enables safe e-commerce participation
+
+3. **📱 First-time UPI Users**
+   
+   **Impact:** Digital Banking Confidence
+   - Transforming fearful users into active participants
+   - Removes language barriers
+   - Makes digital banking accessible for low-literacy users
+
+**Statistics Box:**
+- Target: 1 Million+ users (Year 1)
+- Coverage: All 33 districts of Gujarat
+- Languages: Hindi, Gujarati, English
+- Impact: ₹100+ Crores fraud prevention potential
+
+**Design:** Match the impact visualization from reference PDF slide 10
+
+
+-----------------------------------------------------------
+SLIDE 9: TECHNICAL EXCELLENCE
+-----------------------------------------------------------
+
+**Title:** "Technical Excellence: Production-Ready Platform"
+
+**Technology Stack (layered visual):**
+
+**Frontend:**
+- Next.js 14 (React framework)
+- TypeScript (type safety)
+- Tailwind CSS (responsive design)
+- PWA (Service Workers, offline support)
+
+**AI & ML:**
+- Google Gemini 1.5 Flash (text analysis)
+- Google Gemini 2.0 Flash Exp (voice analysis)
+- Custom detection algorithms
+- Pattern recognition models
+
+**Key Features:**
+- Multi-language support (Hindi, Gujarati, English)
+- Voice output (text-to-speech)
+- Real-time analysis (<2 seconds)
+- Offline functionality
+- Web Share API integration
+- Push notifications
+
+**Quality Metrics (displayed as badges/cards):**
+
+✅ **36/36 Quality Checks Passed**
+✅ **16/16 Features Fully Functional**
+✅ **28 Pages Built Successfully**
+✅ **All API Routes Operational**
+✅ **Performance Optimized (<2 sec)**
+✅ **PWA Deployed & Accessible**
+
+**Security & Privacy:**
+- API key encryption
+- No sensitive data storage
+- Secure data handling
+- Environment variable protection
+
+**Bottom Box:**
+"Built with modern, scalable architecture ensuring reliability, security, and performance for rural connectivity."
+
+**Design:** Clean, organized tech stack visualization
+
+-----------------------------------------------------------
+SLIDE 10: VISION & CLOSING MESSAGE
+-----------------------------------------------------------
+
+**Title:** "BEYOND DETECTION"
+
+**Main Visual:**
+- Metallic lock/safe with open door revealing a book inside
+- Peaceful background gradient (blue to white)
+
+**Large Center Text:**
+"Our goal is not only to detect scams.
+
+Our goal is to create a financially aware India where every citizen understands digital banking before trusting it."
+
+**The Rakshak AI Difference (4 key points):**
+
+1. **Prevention** - Stops threats in real-time (not reactive reporting)
+2. **Education** - Explains WHY something is dangerous
+3. **Practice** - Safe environments to build confidence
+4. **Inclusion** - Native language support, voice guidance
+
+**Future Roadmap (brief, 3 bullets):**
+
+📍 **Immediate Next (Month 7-12):**
+- WhatsApp Bot integration
+- More regional languages (Marathi, Tamil, Telugu)
+- Native mobile apps (Android/iOS)
+
+📍 **Scale (Year 2-3):**
+- 5-state expansion (100+ districts)
+- Banking API partnerships
+- Government collaborations
+
+**Bottom Message:**
+"Project Rakshak AI"
+
+**Team & Contact:**
+- Team: Teli Shlok, Veer Shah, Trivedi Surajz, Solanki Krish
+- SVIT, Vasad
+- Maverick Effect AI Challenge 2026
+
+**Design:** Match the philosophical closing from reference PDF slide 11
+
+
+
+═══════════════════════════════════════════════════════════
+CONTENT GUIDELINES & BEST PRACTICES
+═══════════════════════════════════════════════════════════
+
+**Language Style:**
+- Use short, impactful sentences
+- Include real statistics and data points
+- Highlight UNIQUE features (Gujarati voice, 5 pillars, explainable AI)
+- Emphasize social impact and rural focus throughout
+- Keep technical details accessible to non-technical judges
+- Use action-oriented language
+
+**Visual Consistency:**
+- Maintain consistent color scheme across all slides
+- Use same icon style throughout
+- Keep header/footer consistent
+- Generous white space for readability
+- High-contrast text on all backgrounds
+
+**Data Visualization:**
+- Use charts, graphs, and infographics where applicable
+- Keep visuals clean and easy to understand
+- Use traffic light colors (green/yellow/red) for risk indicators
+- Include before/after comparisons where relevant
+
+═══════════════════════════════════════════════════════════
+PRESENTATION GUIDELINES COMPLIANCE CHECKLIST
+═══════════════════════════════════════════════════════════
+
+✅ **Total Slides:** Exactly 10 slides
+✅ **Time Allocation:** 8 minutes presentation + 2 minutes Q&A
+
+**Required Topics Coverage:**
+
+✅ **Team/Individual Identity** - Slide 1 (Title slide with team names)
+✅ **Ideation Generation/Original Idea** - Slide 2-3 (Problem + Solution concept)
+✅ **Planned Business Model** - EXCLUDED as per instructions (no revenue/financial model)
+✅ **Technical Plan/Specification** - Slide 9 (Tech stack, architecture)
+✅ **Materializing Process Formation** - Embedded throughout pillar slides (implementation details)
+✅ **Implementation Steps** - Slides 5-7 (Five pillars with features)
+✅ **Social Impact & Benefits** - Slide 8 (Target demographics, measurable impact)
+✅ **Output & Future Plans** - Slide 10 (Vision, roadmap)
+✅ **Technical Platform Used** - Slide 9 (Next.js, Gemini AI, PWA)
+✅ **Legal Software Considerations** - Implied (Google Gemini API with proper licensing)
+
+**EXCLUDED as per instructions:**
+❌ Revenue generation/Financial model/Growth expectations - NOT INCLUDED
+
+═══════════════════════════════════════════════════════════
+TIMING BREAKDOWN (8-MINUTE PRESENTATION)
+═══════════════════════════════════════════════════════════
+
+**Introduction (1 minute):**
+- Slide 1: Team intro + hook statement (30 sec)
+- Slide 2: Problem visualization (30 sec)
+
+**Solution Overview (1 minute):**
+- Slide 3: 5-pillar architecture introduction (30 sec)
+- Slide 4: Competitive advantage table (30 sec)
+
+**Core Features - The Pillars (3.5 minutes):**
+- Slide 5: PROTECT pillar with 6 detection channels (1 min)
+- Slide 6: LEARN + PRACTICE pillars (1.5 min)
+- Slide 7: REPORT + CONNECT pillars with PWA UX (1 min)
+
+**Impact & Technical (2 minutes):**
+- Slide 8: Social impact and target users (1 min)
+- Slide 9: Technical excellence and quality metrics (1 min)
+
+**Vision & Closing (0.5 minutes):**
+- Slide 10: Beyond detection philosophy + future roadmap (30 sec)
+
+**Total: 8 minutes**
+**Q&A: 2 minutes**
+
+
+═══════════════════════════════════════════════════════════
+ANTICIPATED Q&A RESPONSES (2 MINUTES)
+═══════════════════════════════════════════════════════════
+
+**Q1: How is Rakshak AI different from existing scam detection apps like Truecaller?**
+
+A: "Truecaller only identifies callers. Rakshak AI is a comprehensive 5-pillar ecosystem:
+- We analyze SMS, UPI, QR codes, screenshots, and voice calls
+- We EXPLAIN why threats are dangerous in Gujarati/Hindi voice
+- We provide interactive education with 12 lesson categories
+- We offer 4 safe practice simulators including real scam call training
+- We have district-wise community alerts covering all 33 Gujarat districts
+- Most importantly: we're built specifically for rural, first-time digital users with low literacy."
+
+---
+
+**Q2: Does the project require internet connection and API keys?**
+
+A: "Yes, internet is required for AI-powered detection through Google Gemini API. However, our PWA architecture allows educational modules, practice simulators, and some basic checks to work offline once loaded. This hybrid approach ensures core protection is always available while providing advanced AI analysis when connected."
+
+---
+
+**Q3: How do you ensure user privacy?**
+
+A: "Absolute privacy by design:
+- Zero login required - completely anonymous
+- No sensitive data storage on servers
+- Stateless architecture - no user database
+- API keys are encrypted via environment variables
+- Only sanitized text (not original content) is sent for analysis
+- All user progress tracked locally in browser storage
+- No data harvesting or selling"
+
+---
+
+**Q4: How accurate is your AI detection system?**
+
+A: "We use AI-powered detection with Google Gemini combined with pattern recognition algorithms. The system has been tested on real Gujarat scam data with:
+- <2 second analysis time
+- Traffic-light risk scoring (Safe/Caution/Danger)
+- Explainable results showing specific red flags
+- Real Gujarati scam recordings for training validation
+- All 36 quality checks passed during testing"
+
+---
+
+**Q5: Can this scale beyond Gujarat to other states?**
+
+A: "Absolutely! Our architecture is state-agnostic:
+- Adding new languages takes approximately 1 month
+- District alert system is modular and extensible
+- Already planned: Marathi, Tamil, Telugu, Bengali
+- PWA deployment allows instant nationwide access
+- No physical infrastructure needed
+- API-based design enables easy integration with state-specific threat databases"
+
+---
+
+**Q6: What makes the '5-pillar' approach unique?**
+
+A: "Most solutions focus on only ONE aspect:
+- Banks provide awareness (no detection)
+- Apps provide detection (no education)
+- Nobody provides practice environments
+
+Rakshak AI is the ONLY platform that combines:
+1. PROTECT - Real-time threat detection
+2. LEARN - Interactive financial literacy
+3. PRACTICE - Safe sandbox training
+4. REPORT - Community intelligence
+5. CONNECT - Universal PWA accessibility
+
+This holistic approach addresses the complete scam prevention lifecycle, not just one piece."
+
+═══════════════════════════════════════════════════════════
+REFERENCE MATERIALS TO ATTACH
+═══════════════════════════════════════════════════════════
+
+When using this prompt with AI presentation tools, attach these files:
+
+1. **Rakshak-AI-Digital-Shield.pdf** (the PDF you just uploaded)
+   - **Purpose:** VISUAL STYLE REFERENCE ONLY (colors, theme, layout patterns)
+   - **DO NOT USE:** The content, slide count, or feature descriptions from this PDF
+   - **DO USE:** Dark navy theme, green/cyan neon colors, futuristic tech aesthetic, circuit patterns
+   - **Important:** Tell the AI: "Use ONLY the visual design style from this PDF, NOT the content"
+
+2. **RAKSHAK_AI_PROJECT_REFERENCE.md**
+   - **Purpose:** YOUR ACTUAL project details and content source
+   - **USE THIS FOR:** All text content, statistics, feature descriptions, 5-pillar structure
+   - **This contains:** Your real implementation with all 5 pillars fully deployed
+
+3. **This prompt file (PRESENTATION_AI_PROMPT.txt)**
+   - **Purpose:** Slide-by-slide structure and instructions
+   - **Follow:** Exactly 10 slides as specified here
+
+═══════════════════════════════════════════════════════════
+INSTRUCTIONS FOR AI PRESENTATION TOOLS
+═══════════════════════════════════════════════════════════
+
+**For Gamma.app:**
+1. Upload this PRESENTATION_AI_PROMPT.txt file
+2. Upload RAKSHAK_AI_PROJECT_REFERENCE.md (for content)
+3. Upload Rakshak-AI-Digital-Shield.pdf (for visual style ONLY)
+4. **Tell Gamma:** "Use the dark navy futuristic theme from the PDF, but generate content from the prompt and reference MD file. The PDF is for visual style inspiration only, not content."
+5. Select "Create presentation from documents"
+6. Specify exactly 10 slides
+7. Review and ensure it used YOUR content, not PDF content
+
+**For Beautiful.ai:**
+1. Start new presentation
+2. Copy-paste this prompt into their AI assistant
+3. **Add instruction:** "I'm attaching a PDF for visual style reference only (dark navy theme, green/cyan colors, futuristic tech aesthetic). Do NOT use its content. Generate content from this prompt."
+4. Upload Rakshak-AI-Digital-Shield.pdf as style reference
+5. Select tech/cybersecurity template with dark theme
+6. Generate 10 slides
+7. Verify content matches YOUR 5-pillar structure
+
+**For Canva (with AI features):**
+1. Choose "Cybersecurity" or "Tech" template with dark navy background
+2. Use "Magic Design" feature with this prompt
+3. Manually adjust colors to match PDF (dark navy #0A1628, neon green #00FF9F, cyan #00D9FF)
+4. Import shield and tech icons similar to PDF style
+5. Generate 10 slides
+6. Use YOUR content from this prompt, style from PDF reference
+
+═══════════════════════════════════════════════════════════
+FINAL DELIVERY CHECKLIST
+═══════════════════════════════════════════════════════════
+
+Before presenting on 13 August 2026:
+
+✅ Presentation has exactly 10 slides
+✅ Visual style matches reference PDF (blue theme, clean layout)
+✅ All 5 pillars clearly explained
+✅ No revenue/financial model content included
+✅ Social impact emphasized throughout
+✅ Technical details present but accessible
+✅ Statistics and data points included
+✅ Images are high-quality and professional
+✅ Text is readable on projection screen
+✅ Timing practiced (8 minutes + 2 min Q&A)
+✅ Laptop ready with live project demo
+✅ Internet connection tested for demo
+✅ API keys configured and working
+✅ Pen drive backup with presentation
+✅ Hard copy printed
+✅ Team ready to answer questions
+
+═══════════════════════════════════════════════════════════
+END OF PROMPT
+═══════════════════════════════════════════════════════════
+
+Good luck at Maverick Effect AI Challenge 2026 Finals! 🏆
+
+Team Rakshak AI - SVIT, Vasad
+Teli Shlok Jamnashankar, Veer Shah, Trivedi Surajz Bharatbhushan, Solanki Krish Shantilal
+

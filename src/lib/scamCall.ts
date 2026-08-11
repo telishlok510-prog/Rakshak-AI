@@ -248,6 +248,130 @@ Caller: If you tell anyone or disconnect, we will issue arrest warrant immediate
         },
       ],
     },
+    {
+      id: "digital-arrest-gu",
+      title: {
+        en: "Digital Arrest Scam (Gujarati)",
+        gu: "ડિજિટલ અરેસ્ટ સ્કૅમ (ગુજરાતી)",
+      },
+      language: "gu",
+      audioUrl: "/audio/scam-calls/digital-arrest-gu.mp3",
+      durationSeconds: 60,
+      description: {
+        en: "Fake CBI officer threatens arrest for money laundering",
+        gu: "નકલી CBI અધિકારી મની લોન્ડરિંગ માટે ધરપકડની ધમકી આપે છે",
+      },
+      transcript: `[રિંગ...]
+કૉલ કરનાર: હેલો, આ મુંબઈ સાયબર ક્રાઈમ સેલમાંથી ઇન્સ્પેક્ટર વર્મા બોલું છું. શું હું ખાતાધારક સાથે વાત કરું છું?
+તમે: હા... આ શું વાત છે?
+કૉલ કરનાર: સાહેબ, તમારા બેંક ખાતાનો ઉપયોગ મની લોન્ડરિંગ કેસમાં થયો છે. તમારી વિગતોનો ઉપયોગ કરીને કંબોડિયામાં ડ્રગ્સ સાથે પાર્સલ મોકલવામાં આવ્યું છે.
+તમે: શું? મેં ક્યારેય કોઈ પાર્સલ મોકલ્યું નથી!
+કૉલ કરનાર: બધા ગુનેગારો આવું જ કહે છે. તમારો કેસ હવે ડિજિટલ અરેસ્ટ હેઠળ છે. તમે તમારું ઘર છોડી શકતા નથી નહીંતર તમને શારીરિક રીતે ધરપકડ કરવામાં આવશે.
+તમે: આ તો પાગલપણું છે! મેં કંઈ ખોટું કર્યું નથી!
+કૉલ કરનાર: હું તમને મદદ કરી શકું છું, પણ તમારે સહકાર આપવો પડશે. તપાસ સાફ કરવા માટે આ ખાતામાં ₹50,000 ટ્રાન્સફર કરો. આ સાબિત કરવા માટે કે તમે ભાગી રહ્યા નથી.
+તમે: શું મારે આની જાણ ક્યાંક કરવી જોઈએ?
+કૉલ કરનાર: જો તમે કોઈને કહેશો અથવા ડિસ્કનેક્ટ કરશો, તો અમે તરત જ ધરપકડ વોરંટ બહાર પાડીશું. લાઈન પર રહો.`,
+      pausePoints: [
+        {
+          atSeconds: 18,
+          question: {
+            en: "Caller claims 'digital arrest' and threatens you cannot leave home. Is this real?",
+            gu: "કૉલ કરનાર 'ડિજિટલ અરેસ્ટ' નો દાવો કરે છે અને ધમકી આપે છે કે તમે ઘર છોડી શકતા નથી. શું આ સાચું છે?",
+          },
+          options: [
+            "હા, નવો કાયદો છે",
+            "ના, આ છેતરપિંડી છે - ડિજિટલ અરેસ્ટ જેવી કોઈ વસ્તુ નથી",
+            "ફક્ત ગંભીર કેસમાં",
+          ],
+          correctOptionIndex: 1,
+          explanation: {
+            en: "🚩 Complete scam! 'Digital arrest' does not exist in Indian law. Real police never call to inform of arrest. They come in person with proper documentation.",
+            gu: "🚩 સંપૂર્ણ છેતરપિંડી! ભારતીય કાયદામાં 'ડિજિટલ અરેસ્ટ' જેવું કંઈ નથી. સાચી પોલીસ ધરપકડની જાણ કરવા ક્યારેય ફોન નથી કરતી. તેઓ યોગ્ય દસ્તાવેજો સાથે રૂબરૂમાં આવે છે.",
+          },
+          relatedIndicatorCode: "CALL_IMPERSONATION",
+        },
+        {
+          atSeconds: 42,
+          question: {
+            en: "Caller demands ₹50,000 and threatens arrest if you hang up. What should you do?",
+            gu: "કૉલ કરનાર ₹50,000 ની માંગ કરે છે અને જો તમે ફોન કાપો તો ધરપકડની ધમકી આપે છે. તમારે શું કરવું જોઈએ?",
+          },
+          options: [
+            "પૈસા ટ્રાન્સફર કરો - પોલીસ છે",
+            "તરત ફોન કાપો, નંબર બ્લોક કરો, 1930 પર રિપોર્ટ કરો",
+            "પહેલા ફેમિલી સાથે ચર્ચા કરો",
+          ],
+          correctOptionIndex: 1,
+          explanation: {
+            en: "🎯 Correct! Hang up immediately. Real police NEVER demand money over phone. Report to cybercrime.gov.in or call 1930 helpline. Block the number.",
+            gu: "🎯 સાચું! તરત જ ફોન કાપો. સાચી પોલીસ ક્યારેય ફોન પર પૈસાની માંગ નથી કરતી. cybercrime.gov.in પર રિપોર્ટ કરો અથવા 1930 હેલ્પલાઇન પર કૉલ કરો. નંબર બ્લોક કરો.",
+          },
+          relatedIndicatorCode: "CALL_IMPERSONATION",
+        },
+      ],
+    },
+    {
+      id: "electricity-bill-gu",
+      title: {
+        en: "Fake Electricity Bill Scam (Gujarati)",
+        gu: "નકલી વીજળી બિલ સ્કૅમ (ગુજરાતી)",
+      },
+      language: "gu",
+      audioUrl: "/audio/scam-calls/electricity-bill-gu.mp3",
+      durationSeconds: 50,
+      description: {
+        en: "Scammer pretends to be electricity company, threatens connection cut",
+        gu: "છેતરનાર વીજળી કંપનીનો ડોળ કરે છે, કનેક્શન કાપવાની ધમકી આપે છે",
+      },
+      transcript: `[રિંગ...]
+કૉલ કરનાર: હેલો, આ અમદાવાદ વીજળી બોર્ડમાંથી છે. શું હું પટેલ સાહેબ સાથે વાત કરું છું?
+તમે: હા, કહો.
+કૉલ કરનાર: સાહેબ, તમારો છેલ્લો બિલ ₹8,450 બાકી છે. તમે 3 મહિનાથી ચૂકવણી કરી નથી.
+તમે: પણ મેં તો ગયા મહિને ચૂકવણી કરી હતી!
+કૉલ કરનાર: સાહેબ, અમારી સિસ્ટમમાં કોઈ રેકોર્ડ નથી. આજે સાંજે 6 વાગ્યા સુધી જો ચૂકવણી નહીં થાય તો તમારું કનેક્શન કાપી નાખવામાં આવશે.
+તમે: આટલી જલદી? આ તો ખોટું છે!
+કૉલ કરનાર: સાહેબ, હું તમને મદદ કરવા માંગું છું. તમે હવે જ PhonePe અથવા Google Pay થી આ નંબર પર ચૂકવણી કરો: 98765-43210. તરત જ તમારું કનેક્શન ચાલુ રહેશે.
+તમે: પણ વીજળી બોર્ડ ફોન પર પૈસા માંગે છે?
+કૉલ કરનાર: હા સાહેબ, આ નવી સિસ્ટમ છે. તમે ઓનલાઇન પેમેન્ટ કરી શકો છો. ઝડપ કરો, ટીમ તમારા ઘરે પહોંચી રહી છે કનેક્શન કાપવા.`,
+      pausePoints: [
+        {
+          atSeconds: 20,
+          question: {
+            en: "Caller creates panic with 'connection cut by 6 PM today'. Is this normal?",
+            gu: "કૉલ કરનાર 'આજે સાંજે 6 વાગ્યા સુધી કનેક્શન કાપી નાખશે' કહીને ગભરાટ બનાવે છે. શું આ સામાન્ય છે?",
+          },
+          options: [
+            "હા, બિલ બાકી હોય તો આમ થાય",
+            "ના, આ ઉતાવળની યુક્તિ છે - સાચી વીજળી કંપની પહેલા નોટિસ આપે છે",
+            "કેટલીકવાર આમ થાય છે",
+          ],
+          correctOptionIndex: 1,
+          explanation: {
+            en: "🚩 Red flag! Real electricity companies send multiple written notices before disconnection, never same-day threats. This urgency is a scam tactic.",
+            gu: "🚩 લાલ સંકેત! સાચી વીજળી કંપની ડિસ્કનેક્શન પહેલા બહુવિધ લેખિત નોટિસ મોકલે છે, ક્યારેય તે જ દિવસે ધમકી નહીં. આ ઉતાવળ છેતરપિંડીની યુક્તિ છે.",
+          },
+          relatedIndicatorCode: "URGENCY",
+        },
+        {
+          atSeconds: 38,
+          question: {
+            en: "Caller asks for PhonePe payment to a personal mobile number. Should you pay?",
+            gu: "કૉલ કરનાર વ્યક્તિગત મોબાઇલ નંબર પર PhonePe પેમેન્ટ માંગે છે. શું તમારે ચૂકવણી કરવી જોઈએ?",
+          },
+          options: [
+            "હા, તે વીજળી બોર્ડમાંથી છે",
+            "ના, ક્યારેય નહીં - સાચી વીજળી કંપની વ્યક્તિગત નંબર પર પૈસા નથી માંગતી",
+            "પહેલા બિલ ચેક કરો",
+          ],
+          correctOptionIndex: 1,
+          explanation: {
+            en: "🎯 Correct! Real electricity companies never ask for payment to personal mobile numbers. They use official portals, bank accounts, or authorized collection centers. Hang up and check your bill on the official website or app.",
+            gu: "🎯 સાચું! સાચી વીજળી કંપની ક્યારેય વ્યક્તિગત મોબાઇલ નંબર પર ચૂકવણી માંગતી નથી. તેઓ અધિકૃત પોર્ટલ, બેંક ખાતા, અથવા અધિકૃત કલેક્શન સેન્ટર વાપરે છે. ફોન કાપો અને તમારા બિલને અધિકૃત વેબસાઇટ અથવા એપ પર ચેક કરો.",
+          },
+          relatedIndicatorCode: "SUSPICIOUS_PAYMENT",
+        },
+      ],
+    },
   ],
 };
 
