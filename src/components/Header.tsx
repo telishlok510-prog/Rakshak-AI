@@ -10,6 +10,7 @@ const NAV = [
   { href: "/check", key: "nav.protect" },
   { href: "/learn", key: "nav.learn" },
   { href: "/practice", key: "nav.practice" },
+  { href: "/scams", key: "nav.scams" },
   { href: "/dashboard", key: "nav.dashboard" },
   { href: "/report", key: "nav.report" },
   { href: "/about", key: "nav.about" },
