@@ -195,7 +195,7 @@ Caller: If you tell anyone or disconnect, we will issue arrest warrant immediate
         gu: "નકલી બેંક KYC કૉલ (ગુજરાતી)",
       },
       language: "gu",
-      audioUrl: "/audio/scam-calls/bank-kyc-block-gu.mp3",
+      audioUrl: "/audio/scam-calls/bank-kyc-block-gu.mpeg",
       durationSeconds: 45,
       description: {
         en: "Gujarati language scam: caller impersonates bank officer",
@@ -255,7 +255,7 @@ Caller: If you tell anyone or disconnect, we will issue arrest warrant immediate
         gu: "ડિજિટલ અરેસ્ટ સ્કૅમ (ગુજરાતી)",
       },
       language: "gu",
-      audioUrl: "/audio/scam-calls/digital-arrest-gu.mp3",
+      audioUrl: "/audio/scam-calls/digital-arrest-gu.mpeg",
       durationSeconds: 60,
       description: {
         en: "Fake CBI officer threatens arrest for money laundering",
@@ -317,7 +317,7 @@ Caller: If you tell anyone or disconnect, we will issue arrest warrant immediate
         gu: "નકલી વીજળી બિલ સ્કૅમ (ગુજરાતી)",
       },
       language: "gu",
-      audioUrl: "/audio/scam-calls/electricity-bill-gu.mp3",
+      audioUrl: "/audio/scam-calls/electricity-bill-gu.mpeg",
       durationSeconds: 50,
       description: {
         en: "Scammer pretends to be electricity company, threatens connection cut",

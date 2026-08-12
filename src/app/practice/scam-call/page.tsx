@@ -27,18 +27,6 @@ export default function ScamCallPracticePage() {
 
       <ScamCallScenarioList />
 
-      {/* Important Note */}
-      <div className="mt-8 rounded-xl border-2 border-orange-300 bg-orange-50 p-6">
-        <h3 className="mb-3 text-lg font-bold text-orange-900">
-          ⚠️ {t("lang") === "en" ? "Important: Audio Files Required" : "મહત્વપૂર્ણ: ઑડિઓ ફાઇલો જરૂરી"}
-        </h3>
-        <p className="text-sm text-gray-700">
-          {t("lang") === "en"
-            ? "These scenarios require audio recordings to be placed in /public/audio/scam-calls/. For the MVP, you'll need to create or record these audio files based on the transcripts provided in the scenario data. Use text-to-speech tools or voice actors to recreate realistic scam call scenarios."
-            : "આ પરિસ્થિતિઓ માટે /public/audio/scam-calls/ માં ઑડિઓ રેકોર્ડિંગ્સ મૂકવાની જરૂર છે. MVP માટે, તમારે પરિસ્થિતિ ડેટામાં આપેલી ટ્રાન્સક્રિપ્ટ્સના આધારે આ ઑડિઓ ફાઇલો બનાવવી અથવા રેકોર્ડ કરવી જરૂરી છે."}
-        </p>
-      </div>
-
       {/* Safety Tips */}
       <div className="mt-6 rounded-xl border-2 border-primary/20 bg-primary/5 p-6">
         <h3 className="mb-3 text-xl font-bold text-primary">

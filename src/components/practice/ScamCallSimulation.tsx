@@ -19,6 +19,7 @@ export default function ScamCallSimulation({ scenario, onComplete }: ScamCallSim
   
   const [playState, setPlayState] = useState<PlayState>("idle");
   const [currentTime, setCurrentTime] = useState(0);
+  const [actualDuration, setActualDuration] = useState(scenario.durationSeconds); // Use actual audio duration
   const [currentPausePointIndex, setCurrentPausePointIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -27,6 +28,36 @@ export default function ScamCallSimulation({ scenario, onComplete }: ScamCallSim
 
   const currentPausePoint = scenario.pausePoints[currentPausePointIndex];
   const allAnswered = answeredPoints.size === scenario.pausePoints.length;
+
+  // Load actual audio duration when metadata is loaded
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleLoadedMetadata = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setActualDuration(audio.duration);
+        console.log(`Audio loaded: ${scenario.id} - Duration: ${audio.duration.toFixed(2)}s (Expected: ${scenario.durationSeconds}s)`);
+      }
+    };
+
+    const handleError = () => {
+      console.error(`Failed to load audio: ${scenario.audioUrl}`);
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("error", handleError);
+
+    // Try to load metadata immediately if already loaded
+    if (audio.readyState >= 1) {
+      handleLoadedMetadata();
+    }
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
+    };
+  }, [scenario.audioUrl, scenario.id, scenario.durationSeconds]);
 
   // Monitor audio time and auto-pause at pause points
   useEffect(() => {
@@ -120,7 +151,7 @@ export default function ScamCallSimulation({ scenario, onComplete }: ScamCallSim
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const progressPercent = (currentTime / scenario.durationSeconds) * 100;
+  const progressPercent = actualDuration > 0 ? (currentTime / actualDuration) * 100 : 0;
 
   return (
     <div className="space-y-6">
@@ -133,7 +164,7 @@ export default function ScamCallSimulation({ scenario, onComplete }: ScamCallSim
           {scenario.description[lang]}
         </p>
         <div className="mt-3 flex items-center gap-4 text-sm text-gray-600">
-          <span>⏱️ {formatTime(scenario.durationSeconds)}</span>
+          <span>⏱️ {formatTime(actualDuration)}</span>
           <span>❓ {scenario.pausePoints.length} questions</span>
           <span>🎯 Score: {score}/{scenario.pausePoints.length}</span>
         </div>
@@ -157,14 +188,14 @@ export default function ScamCallSimulation({ scenario, onComplete }: ScamCallSim
                 className={`absolute top-0 h-full w-1 ${
                   answeredPoints.has(index) ? "bg-green-500" : "bg-orange-400"
                 }`}
-                style={{ left: `${(point.atSeconds / scenario.durationSeconds) * 100}%` }}
+                style={{ left: `${actualDuration > 0 ? (point.atSeconds / actualDuration) * 100 : 0}%` }}
                 title={`Question ${index + 1} at ${formatTime(point.atSeconds)}`}
               />
             ))}
           </div>
           <div className="mt-1 flex justify-between text-xs text-gray-500">
             <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(scenario.durationSeconds)}</span>
+            <span>{formatTime(actualDuration)}</span>
           </div>
         </div>
 

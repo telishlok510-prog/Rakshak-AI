@@ -1,0 +1,289 @@
+=============================================================
+RAKSHAK AI PRESENTATION - CRITICAL FIXES NEEDED
+Slide-by-Slide Issue Report & Fix Instructions
+=============================================================
+
+After careful analysis of your generated presentation, here are the REQUIRED fixes:
+
+═══════════════════════════════════════════════════════════
+❌ SLIDE 1 - CRITICAL FIX REQUIRED
+═══════════════════════════════════════════════════════════
+
+**Current Issues:**
+1. Shows only 3 boxes: "Category", "Status", "Project Developer"
+2. Does NOT mention the 5 pillars (PROTECT, LEARN, PRACTICE, REPORT, CONNECT)
+3. Missing the tagline "Learn. Practice. Protect."
+
+**Required Fix:**
+
+**LEFT SIDE (Dark navy background):**
+
+**Title (large white text):**
+Rakshak AI
+
+**Subtitle (cyan/green text, large):**
+Learn. Practice. Protect.
+
+**Under subtitle (white text):**
+AI-Powered Financial Safety for Rural India.
+
+**Three info boxes (with green borders, dark backgrounds):**
+- Box 1: "Category: Cyber Safety & Financial Literacy"
+- Box 2: "Status: Live Deployment (PWA)"
+- Box 3: "Project Developer: Team Rakshak AI"
+
+**At very bottom (small white text):**
+Team: Teli Shlok Jamnashankar, Veer Shah, Trivedi Surajz Bharatbhushan, Solanki Krish Shantilal.
+Institution: SVIT, Vasad | Maverick Effect AI Challenge 2026 Finals (13 August 2026).
+
+**RIGHT SIDE:**
+Keep the excellent farmer photo with green shield overlay (this is perfect!)
+
+**Note:** The subtitle "Learn. Practice. Protect." represents your 3 main pillars that are fully explained in Slide 3 where all 5 pillars are shown.
+
+═══════════════════════════════════════════════════════════
+❌ SLIDE 3 - TITLE MISSING
+═══════════════════════════════════════════════════════════
+
+**Current Issue:**
+- Shows the 5 hexagonal pillars correctly
+- BUT missing the slide title at the top
+
+**Required Fix:**
+
+**Add at TOP of slide (large white text):**
+Introducing Rakshak AI
+
+**Subtitle (below title, gray text):**
+A comprehensive ecosystem combining detection, education, practice, reporting, and accessibility
+
+**Keep the current 5 pillars layout:**
+- Top Center: PROTECT (shield icon) - "Real-time AI threat detection"
+- Left: LEARN (book icon) - "Interactive financial literacy"
+- Right: PRACTICE (game controller icon) - "Safe sandbox training"
+- Bottom Left: REPORT (megaphone icon) - "Community intelligence"
+- Bottom Right: CONNECT (globe icon) - "Universal accessibility (PWA)"
+
+**Bottom message box (keep as-is):**
+"A comprehensive ecosystem combining detection, education, practice, reporting, and accessibility—all in one platform"
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 2 - MINOR TEXT REFINEMENT
+═══════════════════════════════════════════════════════════
+
+**Current Status:** Good, but check numbering
+
+**Ensure the 3 boxes are numbered:**
+
+**Box 1** (cyan border) - "The Context"
+Millions of first-time digital banking users are now transacting online via UPI.
+
+**Box 2** (cyan border) - "The Flaw"
+Most awareness content is stuck in English. Users don't know normal banking behavior, making them highly susceptible to manipulation.
+
+**Box 3** (red/brown border) - "The Reality"
+₹1,750+ Crores lost annually | 50,000+ monthly complaints | 65% of victims are from rural areas. Prevention is the only cure.
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 5 - ADD TITLE
+═══════════════════════════════════════════════════════════
+
+**Current Issue:**
+- Shows "Cyber-Agri Tech" as title
+- Should be "Pillar 1: PROTECT"
+
+**Required Fix:**
+
+**Title (top, large white text):**
+Pillar 1: PROTECT (Implemented Core Platform)
+
+**Subtitle:**
+Real-time AI threat detection across 6 channels
+
+**Keep all 6 feature boxes as-is** (they're perfect)
+
+**Bottom green highlight box (verify text):**
+"Automatic Gujarati Voice Output & AI Chat Assistant: We don't just block the threat; our AI instantly explains the danger aloud in the user's native language, completely bypassing the literacy barrier."
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 6 - ADD PROPER TITLES
+═══════════════════════════════════════════════════════════
+
+**Current Issue:**
+- Shows "Pillar 2 (LEARN)" and "Pillar 3 (PRACTICE)" titles
+- BUT missing detailed descriptions
+
+**Required Fix:**
+
+**LEFT SIDE - Pillar 2 (LEARN)**
+
+Title: Pillar 2 (LEARN)
+Subtitle: Interactive financial literacy
+
+**Text below phone mockup:**
+"12 interactive lesson categories (Core Banking, Financial Growth, Threat Awareness) built on real-life Gujarat case studies"
+
+**Insight box at bottom:**
+"Transforming isolated security alerts into contextual micro-learning moments"
+
+**RIGHT SIDE - Pillar 3 (PRACTICE)**
+
+Title: Pillar 3 (PRACTICE)  
+Subtitle: Safe sandbox training
+
+**Text below phone mockups:**
+"4 safe simulators (UPI, Net Banking, ATM, Real Scam Calls)"
+
+**Show two phone screens:**
+A (Scam Simulation) | B (Banking Simulation)
+
+**Insight box at bottom:**
+"Building confidence through practical experience, not theoretical reading"
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 7 - ADD TITLES
+═══════════════════════════════════════════════════════════
+
+**Current Issue:**
+- Shows "Pillar 4: REPORT" and "Pillar 5: CONNECT"
+- Missing detailed feature lists
+
+**Required Fix:**
+
+**TOP SECTION - Pillar 4: REPORT**
+
+**Title:** Pillar 4: REPORT
+
+**Three feature boxes (horizontal):**
+1. "One-tap scam reporting" (shield with tap icon)
+2. "Government integration readiness" (government building icon)
+3. "Collective threat intelligence for 32 local districts" (network/map icon)
+
+**BOTTOM SECTION - Pillar 5: CONNECT**
+
+**Title:** Pillar 5: CONNECT
+**Subtitle:** Frictionless UX: Progressive Web App (PWA) & Explainable AI
+
+**Three-step journey (keep current images):**
+
+Step 1: Intercept - "User long-presses SMS & taps native Android 'Share'"
+
+Step 2: Analyze - "Seamless PWA overlay activates. AI runs instantly." (Google Gemini brain)
+
+Step 3: Explain - "Instant Explainable AI analysis delivered via Voice."
+
+**Bottom feature boxes:**
+✅ Works Offline | ✅ No App Store Needed | ✅ Instant Web Share API | ✅ Universal Compatibility
+
+**Insight box:**
+"Removing copy-paste friction drastically improves accessibility"
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 8 - VERIFY LABELS
+═══════════════════════════════════════════════════════════
+
+**Current Status:** Images are PERFECT!
+
+**Verify these labels under each photo:**
+
+**LEFT circle:** "Elevated Cyber Safety"
+Text: "Immediate reduction in fraud, protecting life savings"
+
+**CENTER circle:** "Scalable Financial Literacy"  
+Text: "Peer-to-peer awareness and safe e-commerce participation"
+
+**RIGHT circle:** "Digital Banking Confidence"
+Text: "Transforming fearful users into active economic participants"
+
+**Bottom stats bar (verify):**
+"Target: 1 Million+ users (Year 1) | Coverage: 33 Gujarat districts | Impact: ₹100+ Crores fraud prevention potential"
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 9 - VERIFY TITLE
+═══════════════════════════════════════════════════════════
+
+**Current Title:** "Architecture & Performance Metrics"
+
+**Keep this title** - it's correct!
+
+**Verify 4 metric badges show:**
+- 36/36 Quality Checks Passed ✅
+- 16/16 Core Features Fully Functional ✅
+- Real-time Analysis in <2 seconds ✅
+- PWA Deployed & 80% Offline Capable ✅
+
+**Center 3D stack layers (verify):**
+1. Frontend: Next.js 14, TypeScript, Tailwind CSS, PWA
+2. AI Engine: Google Gemini 1.5 Flash (Text), Gemini 2.0 Flash Exp (Voice)
+3. Security Edge: API key encryption, Stateless processing (Zero data stored)
+
+═══════════════════════════════════════════════════════════
+✅ SLIDE 10 - VERIFY TEXT
+═══════════════════════════════════════════════════════════
+
+**Current Status:** Image is PERFECT (farmer in field with green network)
+
+**Verify LEFT SIDE text:**
+
+**Title (large white text):**
+From Reactive Defense to Proactive Empowerment.
+
+**Main message:**
+"Our goal is to create a financially aware India where every citizen understands digital banking before trusting it. Rakshak AI bridges the dangerous gap between digital adoption and digital safety."
+
+**Bottom left box:**
+"Made for rural India, protecting 50M+ first-time digital users."
+
+"Direct integration ready with National Cyber Crime Helpline (1930) & RBI Sachet."
+
+**Bottom right:** 
+QR code with text "Experience Live (PWA)"
+
+═══════════════════════════════════════════════════════════
+HOW TO APPLY THESE FIXES
+═══════════════════════════════════════════════════════════
+
+**Option 1: Re-prompt the AI Tool**
+
+Upload this fix file to Gamma.app or Beautiful.ai and say:
+"Please update these specific slides with the corrections mentioned. Keep all existing images and layouts - only update the text as specified."
+
+**Option 2: Manual Editing (Recommended)**
+
+1. Download your presentation as PPTX
+2. Open in PowerPoint or Canva
+3. Fix only these issues:
+   - Slide 1: Add "Learn. Practice. Protect." subtitle
+   - Slide 3: Add "Introducing Rakshak AI" title
+   - Slide 5: Change title to "Pillar 1: PROTECT"
+   - Slide 6-7: Add pillar descriptions
+   - Verify other slides match above
+
+**Option 3: Hybrid Approach**
+
+1. Keep Slides 2, 4, 8, 9, 10 as-is (they're excellent!)
+2. Only regenerate Slides 1, 3, 5, 6, 7 with specific prompts
+
+═══════════════════════════════════════════════════════════
+SUMMARY OF CRITICAL FIXES
+═══════════════════════════════════════════════════════════
+
+**Must Fix:**
+❌ Slide 1 - Add "Learn. Practice. Protect." tagline
+❌ Slide 3 - Add "Introducing Rakshak AI" title  
+❌ Slide 5 - Change title to "Pillar 1: PROTECT"
+
+**Should Verify:**
+⚠️ Slide 6 - Add detailed pillar 2 & 3 descriptions
+⚠️ Slide 7 - Add pillar 4 & 5 feature lists
+⚠️ All slides - Double-check text matches above
+
+**Already Perfect:**
+✅ All user images (farmers, elderly, youth)
+✅ Visual theme and colors
+✅ Layout and design
+✅ Slide 2, 4, 8, 9, 10 content
+
+═══════════════════════════════════════════════════════════
+
+After these fixes, your presentation will be 100% ready for the finals! 🏆

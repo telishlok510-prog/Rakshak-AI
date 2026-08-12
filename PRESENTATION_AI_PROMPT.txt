@@ -3,6 +3,8 @@ AI PROMPT FOR GENERATING RAKSHAK AI PRESENTATION
 Maverick Effect AI Challenge 2026 Finals
 =============================================================
 
+⚠️ **IMPORTANT: This presentation REQUIRES realistic photos of Indian farmers and rural users. Please ensure your AI tool can generate or you can add images manually after generation.**
+
 INSTRUCTION: Use this exact prompt with AI presentation tools like Gamma.app or Beautiful.ai
 
 ---
@@ -11,6 +13,95 @@ PROMPT:
 ---
 
 Create a professional 10-slide hackathon presentation for "Rakshak AI" with the following specifications:
+
+**CRITICAL REQUIREMENT: This presentation MUST include high-quality, realistic photographs of:**
+1. Elderly Indian farmers with smartphones (with green shield overlay effect)
+2. Rural Indian citizens using digital banking
+3. First-time UPI users in village settings
+
+**If the AI tool cannot generate realistic human photos, you will need to:**
+- Use stock photos from Unsplash/Pexels/Pixabay
+- Manually add images after initial generation
+- Use Canva to add green glow/shield effects
+
+═══════════════════════════════════════════════════════════
+IMAGE GENERATION & SOURCING GUIDE
+═══════════════════════════════════════════════════════════
+
+**CRITICAL: This presentation MUST include realistic photos of rural Indian users. DO NOT create a presentation with only icons or abstract graphics.**
+
+### Required Images (3 main slides):
+
+**1. SLIDE 1 (Title) - Hero Image Required:**
+- **Subject:** Elderly Indian farmer (60+ years, white turban/beard) confidently holding smartphone
+- **Effect:** Green glowing digital shield hologram overlay
+- **Background:** Rural village OR dark tech with circuits
+- **Style:** Realistic photo with futuristic tech overlay (like reference PDF slide 1)
+
+**2. SLIDE 8 (Social Impact) - Three User Photos Required:**
+- **Photo 1:** Elderly farmer couple looking at smartphone together (warm, happy)
+- **Photo 2:** Young Indian student/shopkeeper using phone for payment (confident)
+- **Photo 3:** Middle-aged villager making first UPI payment (learning, hopeful)
+- **Style:** Portrait photography, natural lighting, authentic rural India
+
+**3. SLIDE 10 (Closing) - Inspiring Photo Required:**
+- **Subject:** Indian farmer (50-60 years) in agricultural field with smartphone
+- **Effect:** Green shield protection overlay
+- **Mood:** Peaceful, confident, hopeful future
+- **Lighting:** Golden hour, cinematic
+- **Style:** Like reference PDF slide 15
+
+### How to Generate/Source Images:
+
+**Option A: AI Image Generation (Recommended)**
+Use built-in AI image generation in Gamma.app or Beautiful.ai with these prompts:
+
+```
+Prompt 1 (Slide 1):
+"Professional cinematic photo of elderly Indian farmer with white turban and gray beard, wearing traditional clothes, holding modern smartphone in hands, confident gentle smile, glowing green digital shield hologram surrounding him, rural Indian village in background, golden hour lighting, protective technology theme, 8k quality, realistic photography"
+
+Prompt 2a (Slide 8 - Farmers):
+"Elderly Indian farmer couple, man with turban woman with saree, both looking at smartphone screen together with warm smiles, traditional rural clothing, natural village background, warm afternoon lighting, portrait photography, authentic rural India, happy expression"
+
+Prompt 2b (Slide 8 - Youth):
+"Young Indian student or small business owner aged 25-30, modern casual clothing, using smartphone for digital payment, confident professional expression, small shop or college background, bright natural lighting, portrait style"
+
+Prompt 2c (Slide 8 - First-timer):
+"Middle-aged Indian villager aged 40-50 in simple traditional clothes, making UPI payment on smartphone for first time, curious hopeful expression, learning digital banking, rural setting, warm colors, encouraging mood"
+
+Prompt 3 (Slide 10):
+"Wide cinematic shot of Indian farmer aged 50-60 wearing simple white shirt, standing in lush green agricultural field, holding smartphone in hands, looking at screen with peaceful confident expression, glowing green shield hologram effect protecting him, rural village houses in soft focus background, golden hour sunset lighting, hope and security theme, 8k quality realistic photography"
+```
+
+**Option B: Stock Photos (If AI generation fails)**
+Search on Unsplash, Pexels, or Pixabay with keywords:
+- "Indian farmer smartphone"
+- "rural India digital banking"
+- "elderly farmer technology"
+- "Indian agriculture mobile phone"
+- "rural Indian village smartphone"
+
+Then add green shield overlay in Photoshop/Canva.
+
+**Option C: Manual Addition (Post-generation)**
+1. Generate presentation first
+2. Download high-quality stock photos
+3. Manually insert into slides
+4. Add green glow effects using Canva or PowerPoint
+
+### Image Quality Requirements:
+- ✅ High resolution (minimum 1920x1080)
+- ✅ Realistic, not cartoonish
+- ✅ Authentic rural Indian settings
+- ✅ Natural, confident expressions (not sad or struggling)
+- ✅ Modern smartphones visible in photos
+- ✅ Warm, hopeful lighting
+
+### DO NOT:
+- ❌ Use generic stock photos of people with phones
+- ❌ Use only icons or illustrations (must have real photos)
+- ❌ Show confused or sad expressions (show confidence and hope)
+- ❌ Use urban settings for farmer photos
 
 ═══════════════════════════════════════════════════════════
 DESIGN REQUIREMENTS (MATCH REFERENCE PDF VISUAL STYLE)
@@ -75,9 +166,18 @@ SLIDE 1: TITLE SLIDE
 **Tagline:** "AI-Powered Financial Safety for Rural India"
 
 **Visual:** 
-- Large shield icon with message bubble inside (representing protection + communication)
-- Clean white/light gray background with subtle gradient
-- Professional, modern layout
+- **RIGHT SIDE:** Photo/illustration of elderly Indian farmer (60+ years old) wearing turban, holding smartphone with protective green shield hologram overlay
+- Background: Rural village setting OR dark navy tech background with circuit patterns
+- Shield icon glowing in green with subtle neon effect
+- Farmer should look confident and protected (not confused)
+
+**LEFT SIDE:**
+- Large white title text
+- Green/cyan subtitle
+- Three status badges in green rounded boxes:
+  - "Project Developer: Team Rakshak AI (SVIT, Vasad)"
+  - "Category: Cyber Safety & Financial Literacy"
+  - "Status: Live Deployment (PWA)"
 
 **Bottom Information:**
 - Team: Teli Shlok Jamnashankar, Veer Shah, Trivedi Surajz Bharatbhushan, Solanki Krish Shantilal
@@ -85,7 +185,10 @@ SLIDE 1: TITLE SLIDE
 - Event: Maverick Effect AI Challenge 2026 Finals
 - Date: 13 August 2026
 
-**Design Note:** Match the clean, professional style from reference PDF title slide
+**Image Style:** Match reference PDF slide 1 - realistic photo with green tech overlay effect
+
+**AI Image Generation Prompt (if generating):**
+"Professional photo of elderly Indian farmer with white turban and beard, holding smartphone, with glowing green digital shield hologram surrounding him, rural India background, confident expression, futuristic tech overlay, cinematic lighting, 8k quality"
 
 -----------------------------------------------------------
 SLIDE 2: THE PROBLEM - "THE SCAM VULNERABILITY ZONE"
@@ -95,22 +198,33 @@ SLIDE 2: THE PROBLEM - "THE SCAM VULNERABILITY ZONE"
 
 **Subtitle:** "For millions of first-time digital banking users in rural India, this isn't hypothetical—it's daily reality."
 
-**Main Visual:**
-- Graph showing two curves over time:
-  - TOP CURVE (steep upward): "UPI & Digital Payment Adoption" 📈
-  - BOTTOM CURVE (slow upward): "Financial Literacy & Awareness" →
-  - SHADED AREA BETWEEN: "The Scam Vulnerability Zone" (orange/red gradient)
+**LEFT SIDE - Context Boxes (3 cards with green borders):**
 
-**Key Statistics (in boxes):**
-- ₹1,750+ Crores lost to digital fraud annually
+**Card 1: "The Context"** (green/teal gradient box)
+"Millions of first-time digital banking users are now transacting online via UPI."
+
+**Card 2: "The Flaw"** (darker box)
+"Most awareness content is stuck in English, excluding regional speakers. Users don't know how banking apps normally behave, making them susceptible to manipulation."
+
+**Card 3: "The Reality"** (red tint box)
+"Once money is transferred via UPI, it is virtually impossible to recover. Prevention is the only cure."
+
+**RIGHT SIDE - Main Visual:**
+- Large graph showing India map wireframe in background
+- Two diverging curves over time:
+  - **TOP CURVE (red gradient, steep):** "UPI & Mobile Banking Rollout" 📈
+  - **BOTTOM CURVE (gray, slow):** "Localized Cyber Safety Awareness" →
+- **SHADED AREA BETWEEN:** "THE VULNERABILITY ZONE" (red/orange gradient fill)
+
+**Key Statistics (in small boxes around map):**
+- ₹1,750+ Crores lost annually
 - 50,000+ complaints monthly
-- 65% victims from rural/semi-urban areas
-- Only 23% rural citizens can identify scams
+- 65% victims from rural areas
 
-**Bottom Message Box:**
-"Digital Banking is growing faster than Digital Awareness. Without corresponding financial literacy, scam cases are surging exponentially in rural demographics."
+**Design Style:** Match reference PDF slide 2 - dark background, India map, contrasting curves
 
-**Design:** Match the problem visualization style from reference PDF slide 3
+**AI Image Generation Prompt (for background):**
+"Wireframe outline map of India with glowing points, dark navy blue background with circuit patterns, futuristic tech style"
 
 
 -----------------------------------------------------------
@@ -309,38 +423,49 @@ SLIDE 8: SOCIAL IMPACT - EMPOWERING THE NEXT BILLION
 
 **Title:** "Empowering the Next Billion Users"
 
-**Visual:** India map outline with three user segment circles
+**Main Visual - Three User Photos/Illustrations:**
 
-**Three Target Segments:**
+**LEFT CIRCLE - Farmers & Senior Citizens** 👨‍🌾
+**Image:** Elderly Indian farmer couple (man with turban, woman with saree) looking at smartphone together, warm lighting
+- **Icon overlay:** Speedometer/safety icon
+- **Impact Label:** "Elevated Cyber Safety"
+- **Benefits bullet points:**
+  • Immediate reduction in successful fraud
+  • Protects life savings
+  • Builds trust in digital economy
 
-1. **👨‍🌾 Farmers & Senior Citizens**
-   
-   **Impact:** Elevated Cyber Safety
-   - Immediate reduction in successful fraud conversions
-   - Protects life savings
-   - Builds trust in digital economy
+**CENTER CIRCLE - Students & Small Business Owners** 👨‍🎓🏪
+**Image:** Young Indian student/small shop owner using smartphone for payment, confident expression
+- **Icon overlay:** Graduation cap/certificate icon
+- **Impact Label:** "Scalable Financial Literacy"
+- **Benefits bullet points:**
+  • Continuous localized education
+  • Peer-to-peer awareness
+  • Safe e-commerce participation
 
-2. **👨‍🎓 Students & Small Business Owners**
-   
-   **Impact:** Scalable Financial Literacy
-   - Continuous, localized education through interaction
-   - Peer-to-peer scam awareness
-   - Enables safe e-commerce participation
+**RIGHT CIRCLE - First-time UPI Users** 📱
+**Image:** Middle-aged Indian person (rural setting) making first UPI payment with guidance, happy/confident face
+- **Icon overlay:** UPI logo with checkmark
+- **Impact Label:** "Digital Banking Confidence"
+- **Benefits bullet points:**
+  • Transforms fearful users into active participants
+  • Removes language barriers
+  • Accessible for low-literacy users
 
-3. **📱 First-time UPI Users**
-   
-   **Impact:** Digital Banking Confidence
-   - Transforming fearful users into active participants
-   - Removes language barriers
-   - Makes digital banking accessible for low-literacy users
+**Background:** India map wireframe with glowing connection lines between the three user groups
 
-**Statistics Box:**
+**Statistics Box (bottom):**
 - Target: 1 Million+ users (Year 1)
 - Coverage: All 33 districts of Gujarat
 - Languages: Hindi, Gujarati, English
 - Impact: ₹100+ Crores fraud prevention potential
 
-**Design:** Match the impact visualization from reference PDF slide 10
+**Design:** Match reference PDF slide 10 style - three circular user segments with India map
+
+**AI Image Generation Prompts:**
+1. "Elderly Indian farmer couple in traditional dress looking at smartphone together, warm smile, rural village background, natural lighting, portrait photography"
+2. "Young Indian student or small business owner using smartphone for digital payment, modern casual clothing, confident expression, shop background"
+3. "Middle-aged Indian villager making UPI payment on smartphone, traditional rural attire, happy confident expression, learning digital banking, warm colors"
 
 
 -----------------------------------------------------------
@@ -395,45 +520,44 @@ SLIDE 9: TECHNICAL EXCELLENCE
 SLIDE 10: VISION & CLOSING MESSAGE
 -----------------------------------------------------------
 
-**Title:** "BEYOND DETECTION"
+**Title:** "CLOSING THE GAP. SECURING THE FUTURE."
 
 **Main Visual:**
-- Metallic lock/safe with open door revealing a book inside
-- Peaceful background gradient (blue to white)
+- **RIGHT SIDE (70% of slide):** Large photo of Indian farmer in rural field setting
+  - Man aged 50-60 with traditional dress (white shirt, dhoti or simple clothes)
+  - Looking at smartphone with peaceful, confident expression
+  - Green shield hologram overlay protecting him
+  - Soft background: village houses, green fields, peaceful rural India
+  - Golden hour lighting (warm, hopeful)
+  - Green digital protection effect surrounding the farmer
 
-**Large Center Text:**
-"Our goal is not only to detect scams.
+**LEFT SIDE (30% of slide) - Large White Text:**
 
-Our goal is to create a financially aware India where every citizen understands digital banking before trusting it."
+**Main Message:**
+"Our goal is to create a financially aware India where every citizen understands digital banking before trusting it."
 
-**The Rakshak AI Difference (4 key points):**
+**Sub-heading:**
+"Rakshak AI bridges the dangerous gap between India's digital adoption and digital safety."
 
-1. **Prevention** - Stops threats in real-time (not reactive reporting)
-2. **Education** - Explains WHY something is dangerous
-3. **Practice** - Safe environments to build confidence
-4. **Inclusion** - Native language support, voice guidance
+**Integration Note (small text at bottom):**
+"Direct integration with National Cyber Crime Helpline (1930) and RBI Sachet portal built-in."
 
-**Future Roadmap (brief, 3 bullets):**
+**Bottom Right Corner:**
+- Small QR code labeled "Experience Live"
+- Text: "Made for rural India, protecting 50M+ first-time digital users"
 
-📍 **Immediate Next (Month 7-12):**
-- WhatsApp Bot integration
-- More regional languages (Marathi, Tamil, Telugu)
-- Native mobile apps (Android/iOS)
-
-📍 **Scale (Year 2-3):**
-- 5-state expansion (100+ districts)
-- Banking API partnerships
-- Government collaborations
-
-**Bottom Message:**
-"Project Rakshak AI"
-
-**Team & Contact:**
+**Team Credits (bottom left):**
+- Project Rakshak AI
 - Team: Teli Shlok, Veer Shah, Trivedi Surajz, Solanki Krish
-- SVIT, Vasad
-- Maverick Effect AI Challenge 2026
+- SVIT, Vasad | Maverick Effect AI Challenge 2026
 
-**Design:** Match the philosophical closing from reference PDF slide 11
+**Design:** Match reference PDF slide 15 - inspiring rural farmer photo with green tech overlay
+
+**AI Image Generation Prompt:**
+"Indian farmer aged 50-60 in white traditional clothes standing in green agricultural field, holding smartphone, confident peaceful expression, glowing green digital shield hologram surrounding him protectively, rural village in soft focus background, golden hour lighting, cinematic photography, hope and security theme, 8k quality, realistic"
+
+**Alternative Stock Photo Keywords:**
+"Indian farmer smartphone digital banking confident rural agriculture technology protection"
 
 
 
@@ -607,66 +731,4 @@ When using this prompt with AI presentation tools, attach these files:
 3. **This prompt file (PRESENTATION_AI_PROMPT.txt)**
    - **Purpose:** Slide-by-slide structure and instructions
    - **Follow:** Exactly 10 slides as specified here
-
-═══════════════════════════════════════════════════════════
-INSTRUCTIONS FOR AI PRESENTATION TOOLS
-═══════════════════════════════════════════════════════════
-
-**For Gamma.app:**
-1. Upload this PRESENTATION_AI_PROMPT.txt file
-2. Upload RAKSHAK_AI_PROJECT_REFERENCE.md (for content)
-3. Upload Rakshak-AI-Digital-Shield.pdf (for visual style ONLY)
-4. **Tell Gamma:** "Use the dark navy futuristic theme from the PDF, but generate content from the prompt and reference MD file. The PDF is for visual style inspiration only, not content."
-5. Select "Create presentation from documents"
-6. Specify exactly 10 slides
-7. Review and ensure it used YOUR content, not PDF content
-
-**For Beautiful.ai:**
-1. Start new presentation
-2. Copy-paste this prompt into their AI assistant
-3. **Add instruction:** "I'm attaching a PDF for visual style reference only (dark navy theme, green/cyan colors, futuristic tech aesthetic). Do NOT use its content. Generate content from this prompt."
-4. Upload Rakshak-AI-Digital-Shield.pdf as style reference
-5. Select tech/cybersecurity template with dark theme
-6. Generate 10 slides
-7. Verify content matches YOUR 5-pillar structure
-
-**For Canva (with AI features):**
-1. Choose "Cybersecurity" or "Tech" template with dark navy background
-2. Use "Magic Design" feature with this prompt
-3. Manually adjust colors to match PDF (dark navy #0A1628, neon green #00FF9F, cyan #00D9FF)
-4. Import shield and tech icons similar to PDF style
-5. Generate 10 slides
-6. Use YOUR content from this prompt, style from PDF reference
-
-═══════════════════════════════════════════════════════════
-FINAL DELIVERY CHECKLIST
-═══════════════════════════════════════════════════════════
-
-Before presenting on 13 August 2026:
-
-✅ Presentation has exactly 10 slides
-✅ Visual style matches reference PDF (blue theme, clean layout)
-✅ All 5 pillars clearly explained
-✅ No revenue/financial model content included
-✅ Social impact emphasized throughout
-✅ Technical details present but accessible
-✅ Statistics and data points included
-✅ Images are high-quality and professional
-✅ Text is readable on projection screen
-✅ Timing practiced (8 minutes + 2 min Q&A)
-✅ Laptop ready with live project demo
-✅ Internet connection tested for demo
-✅ API keys configured and working
-✅ Pen drive backup with presentation
-✅ Hard copy printed
-✅ Team ready to answer questions
-
-═══════════════════════════════════════════════════════════
-END OF PROMPT
-═══════════════════════════════════════════════════════════
-
-Good luck at Maverick Effect AI Challenge 2026 Finals! 🏆
-
-Team Rakshak AI - SVIT, Vasad
-Teli Shlok Jamnashankar, Veer Shah, Trivedi Surajz Bharatbhushan, Solanki Krish Shantilal
 
