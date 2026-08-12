@@ -12,7 +12,7 @@ This document provides comprehensive details about Rakshak AI for generating a w
 ## 🎯 PROJECT OVERVIEW
 
 **Project Name:** Rakshak AI  
-**Tagline:** "Learn. Practice. Protect."  
+**Tagline:** "Learn. Practice. Protect. Report. Connect"  
 **Problem Statement:** Financial Safety for Rural India  
 **Mission:** AI-powered real-time scam detection + financial literacy + safe practice environments for rural India
 

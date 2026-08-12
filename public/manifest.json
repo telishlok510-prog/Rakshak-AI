@@ -4,8 +4,8 @@
   "description": "AI-powered scam detection to protect first-time digital banking users.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b0b0f",
-  "theme_color": "#0b0b0f",
+  "background_color": "#1a3c6e",
+  "theme_color": "##1a3c6e",
   "icons": [
     {
       "src": "/icons/icon-192.png",
